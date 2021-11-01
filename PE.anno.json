@@ -1,0 +1,19 @@
+[
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~PE|PE>io_out",
+    "sources":[
+      "~PE|PE>io_in_a",
+      "~PE|PE>io_opcode",
+      "~PE|PE>io_in_b"
+    ]
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"."
+  }
+]
