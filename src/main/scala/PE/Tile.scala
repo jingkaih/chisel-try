@@ -142,6 +142,9 @@ class Tile (N: Boolean = true, E: Boolean = true, W: Boolean = true, S: Boolean 
   io.south_out_b := crossBar.io.fw_bottom(7)
 
 
+
+
+
 }
 
 object TileMain extends App {
