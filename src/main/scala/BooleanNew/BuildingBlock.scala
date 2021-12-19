@@ -315,11 +315,6 @@ class BuildingBlock extends Module{
 }
 
 
-//object PEcolMain extends App {
-//  println("Hello World, I will now generate the Verilog file!")
-//  (new chisel3.stage.ChiselStage).emitVerilog(new PEcol())
-//}
-
 
 object BuildBlockMain extends App {
   println("Hello World, I will now generate the Verilog file!")
