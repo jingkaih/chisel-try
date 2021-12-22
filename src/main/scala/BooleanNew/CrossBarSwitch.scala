@@ -82,5 +82,5 @@ class CrossBarSwitch(val width: Int, val sel_input: Boolean, val m: Int, val n: 
 
 object CrossBarMain extends App {
   println("Hello World, I will now generate the Verilog file!")
-  (new chisel3.stage.ChiselStage).emitVerilog(new CrossBarSwitch(64,true,4,4))
+  (new chisel3.stage.ChiselStage).emitVerilog(new CrossBarSwitch(65,true,4,4))
 }

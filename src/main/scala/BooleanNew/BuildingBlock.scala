@@ -4,17 +4,19 @@ import chisel3.util._
 
 class DataBundle(dataWidth: Int = 64) extends Bundle{
   val a = UInt(dataWidth.W)
+  val valid_a = Bool()
   val b = UInt(dataWidth.W)
+  val valid_b = Bool()
 }
 
 class CLOScell4 extends Module{
   val io = IO(new Bundle{
-    val in4 = Vec(4, Input(UInt(64.W)))
-    val out4 = Vec(4, Output(UInt(64.W)))
+    val in4 = Vec(4, Input(UInt(65.W)))
+    val out4 = Vec(4, Output(UInt(65.W)))
     //    val ctrl = Vec(num_out, Input(UInt(log2Up(num_in).W)))// 4 * 2bit
     val ctrl = Input(UInt(8.W))// 4 * 2bit = 8 bit
   })
-  val cell4 = Module(new CrossBarSwitch(64,true,4,4)).io
+  val cell4 = Module(new CrossBarSwitch(65,true,4,4)).io
   for(i <- 0 until 4){
     cell4.select(i) := io.ctrl(7-i*2,6-i*2)
   }
@@ -25,7 +27,9 @@ class CLOScell4 extends Module{
 class CLOSingress1 extends Module{//1st column of 16 4*4 Crossbars// the last col is implemented in another way
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(64.W)))
+    val validin64 = Vec(64, Input(Bool()))
     val out64 = Vec(64, Output(UInt(64.W)))
+    val validout64 = Vec(64, Output(Bool()))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
 
@@ -36,8 +40,9 @@ class CLOSingress1 extends Module{//1st column of 16 4*4 Crossbars// the last co
   //wrapper
   for(i <- 0 until 16)
     for(k <- 0 until 4) {
-      ingress1(i).io.in4(k) := io.in64(i*4+k)
-      io.out64(i+16*k) := ingress1(i).io.out4(k)// topo between ingress1 and ingress2
+      ingress1(i).io.in4(k) := Cat(io.validin64(i*4+k), io.in64(i*4+k))// 1+64 bits
+      io.out64(i+16*k) := ingress1(i).io.out4(k)(63,0)// topo between ingress1 and ingress2
+      io.validout64(i*4+k) := ingress1(i).io.out4(k)(64)
     }
   //control bits assignment
   for(i <- 0 until 16)
@@ -47,7 +52,9 @@ class CLOSingress1 extends Module{//1st column of 16 4*4 Crossbars// the last co
 class CLOSingress2 extends Module{//2nd column of 16 4*4 Crossbars// the last col is implemented in another way
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(64.W)))
+    val validin64 = Vec(64, Input(Bool()))
     val out64 = Vec(64, Output(UInt(64.W)))
+    val validout64 = Vec(64, Output(Bool()))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
 
@@ -59,8 +66,9 @@ class CLOSingress2 extends Module{//2nd column of 16 4*4 Crossbars// the last co
   for(i <- 0 until 4)
     for(j <- 0 until 4)
       for(k <- 0 until 4) {
-        ingress2(i*4+j).io.in4(k) := io.in64((i*4+j)*4+k)
-        io.out64(i*16+j+k*4) := ingress2(i*4+j).io.out4(k)// topo between ingress2 and middle
+        ingress2(i*4+j).io.in4(k) := Cat(io.validin64((i*4+j)*4+k), io.in64((i*4+j)*4+k))
+        io.out64(i*16+j+k*4) := ingress2(i*4+j).io.out4(k)(63,0)// topo between ingress2 and middle
+        io.validout64(i*16+j+k*4) := ingress2(i*4+j).io.out4(k)(64)
       }
   //control bits assignment
   for(i <- 0 until 16)
@@ -70,7 +78,9 @@ class CLOSingress2 extends Module{//2nd column of 16 4*4 Crossbars// the last co
 class CLOSmiddle extends Module{//3rd column of 16 4*4 Crossbars// the last col is implemented in another way
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(64.W)))
+    val validin64 = Vec(64, Input(Bool()))
     val out64 = Vec(64, Output(UInt(64.W)))
+    val validout64 = Vec(64, Output(Bool()))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
 
@@ -82,8 +92,10 @@ class CLOSmiddle extends Module{//3rd column of 16 4*4 Crossbars// the last col 
   for(i <- 0 until 4)
     for(j <- 0 until 4)
       for(k <- 0 until 4) {
-        middle(i*4+j).io.in4(k) := io.in64((i*4+j)*4+k)
-        io.out64(i*16+j+k*4) := middle(i*4+j).io.out4(k)// topo between and middle and egress1
+//        middle(i*4+j).io.in4(k) := Cat(io.validin64((i*4+j)*4+k), io.in64((i*4+j)*4+k))
+        middle(i*4+j).io.in4(k) := Cat(io.validin64(i*16+j*4+k), io.in64(i*16+j*4+k))
+        io.out64(i*16+j+k*4) := middle(i*4+j).io.out4(k)(63,0)// topo between and middle and egress1
+        io.validout64(i*16+j+k*4) := middle(i*4+j).io.out4(k)(64)
       }
   //control bits assignment
   for(i <- 0 until 16)
@@ -93,7 +105,9 @@ class CLOSmiddle extends Module{//3rd column of 16 4*4 Crossbars// the last col 
 class CLOSegress1 extends Module{//4th column of 16 4*4 Crossbars// the last col is implemented in another way
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(64.W)))
+    val validin64 = Vec(64, Input(Bool()))
     val out64 = Vec(64, Output(UInt(64.W)))
+    val validout64 = Vec(64, Output(Bool()))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
 
@@ -104,8 +118,9 @@ class CLOSegress1 extends Module{//4th column of 16 4*4 Crossbars// the last col
   //wrapper
   for(i <- 0 until 16)
     for(k <- 0 until 4) {
-      egress1(i).io.in4(k) := io.in64(i*4+k)
-      io.out64(i+16*k) := egress1(i).io.out4(k)// topo between egress1 and egress2
+      egress1(i).io.in4(k) := Cat(io.validin64(i*4+k), io.in64(i*4+k))
+      io.out64(i+16*k) := egress1(i).io.out4(k)(63,0)// topo between egress1 and egress2
+      io.validout64(i+16*k) := egress1(i).io.out4(k)(64)
     }
   //control bits assignment
   for(i <- 0 until 16)
@@ -115,7 +130,9 @@ class CLOSegress1 extends Module{//4th column of 16 4*4 Crossbars// the last col
 class CLOSegress2 extends Module{// the last col of CLOS
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(64.W)))
+    val validin64 = Vec(64, Input(Bool()))
     val out64 = Vec(64, Output(UInt(64.W)))
+    val validout64 = Vec(64, Output(Bool()))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
 
@@ -126,8 +143,9 @@ class CLOSegress2 extends Module{// the last col of CLOS
   //wrapper
   for(i <- 0 until 16)
     for(k <- 0 until 4) {
-      egress2(i).io.in4(k) := io.in64(i*4+k)
-      io.out64(i*4+k) := egress2(i).io.out4(k)// topo between egress2 and next PEcol: go directly// remember to convert out64 to that bundle in the main function
+      egress2(i).io.in4(k) := Cat(io.validin64(i*4+k), io.in64(i*4+k))
+      io.out64(i*4+k) := egress2(i).io.out4(k)(63,0)// topo between egress2 and next PEcol: go directly// remember to convert out64 to that bundle in the main function
+      io.validout64(i*4+k) := egress2(i).io.out4(k)(64)
     }
   //control bits assignment
   for(i <- 0 until 16)
@@ -153,10 +171,14 @@ class PEcol(instrWidth: Int = 128) extends Module{
 //    ALU64_32(i).io.in_b := d_in_reg(i).b
     ALU64_32(i).io.in_a := io.d_in(i).a
     ALU64_32(i).io.in_b := io.d_in(i).b
+    ALU64_32(i).io.validin_a := io.d_in(i).valid_a
+    ALU64_32(i).io.validin_b := io.d_in(i).valid_b
+//    ALU64_32(i).io.opcode := io.instr(159-5*i, 155-5*i)
     ALU64_32(i).io.opcode := io.instr(127-4*i, 124-4*i)
-//    ALU64_32(i).io.opcode := instr(127-4*i, 124-4*i)
     io.d_out(i).a := ALU64_32(i).io.out_a
     io.d_out(i).b := ALU64_32(i).io.out_b
+    io.d_out(i).valid_a := ALU64_32(i).io.validout_a
+    io.d_out(i).valid_b := ALU64_32(i).io.validout_b
   }
 }
 
