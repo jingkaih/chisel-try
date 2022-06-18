@@ -5,8 +5,8 @@ import chisel3.util._
 
 class SMtest extends Module{
   val io = IO(new Bundle{
-    val d_in = Vec(32, Input(new DataBundle()))
-    val d_out = Vec(32, Output(new DataBundle()))
+    val d_in = Vec(32, Input(new PEDataBundle()))
+    val d_out = Vec(32, Output(new PEDataBundle()))
     val wr_en_mem1 = Input(Bool())
     val wr_instr_mem1 = Input(UInt(128.W))// configure PE+ingress1+ingress2// instructions stored in order
     val run = Input(Bool())
