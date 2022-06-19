@@ -8,7 +8,7 @@ class MEMDataBundle(dataWidth: Int = 64) extends Bundle{
   val data = UInt(dataWidth.W)
 }
 
-class BP(PEnum: Int = 23, dataWidth: Int = 4) extends Module{
+class BP(PEnum: Int = 22, dataWidth: Int = 4) extends Module{
   val io = IO(new Bundle{
     //    val d_in = Vec(32, Input(new PEDataBundle()))
     //    val d_out = Vec(32, Output(new PEDataBundle()))
