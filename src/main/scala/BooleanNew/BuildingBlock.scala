@@ -241,7 +241,8 @@ class PEcol(dataWidth: Int = 64, instrWidth: Int = 224, dataRAMaddrWidth: Int = 
     ALU64_32(i).io.in_b := io.d_in(i).b
     ALU64_32(i).io.validin_a := io.d_in(i).valid_a
     ALU64_32(i).io.validin_b := io.d_in(i).valid_b
-    ALU64_32(i).io.opcode := io.instr(223-7*i, 217-7*i)
+    ALU64_32(i).io.opcode := io.instr((instrWidth-1)-(instrWidth/32)*i, (instrWidth-instrWidth/32)-(instrWidth/32)*i)
+//    ALU64_32(i).io.opcode := io.instr(223-7*i, 217-7*i)
 //    ALU64_32(i).io.opcode := io.instr(159-5*i, 155-5*i)
 //    ALU64_32(i).io.opcode := io.instr(127-4*i, 124-4*i)
     io.d_out(i).a := ALU64_32(i).io.out_a
