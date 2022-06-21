@@ -211,7 +211,7 @@ class CLOSegress2(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module
     egress2(i).io.ctrl := ctrl_reg(127-i*8,120-i*8)
 }
 
-class PEcol(dataWidth: Int = 64, instrWidth: Int = 224, dataRAMaddrWidth: Int = 8) extends Module{
+class PEcol(dataWidth: Int = 64, instrWidth: Int = 288, dataRAMaddrWidth: Int = 8) extends Module{
   val io = IO(new Bundle{
     val d_in = Vec(32, Input(new PEDataBundle(dataWidth)))
     val d_out = Vec(32, Output(new PEDataBundle(dataWidth)))
