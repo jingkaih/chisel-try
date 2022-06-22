@@ -91,8 +91,8 @@ module ALU(
   wire  gate_valid_a = opcode_8 & ~opcode_6 & opcode_5 ? _GEN_28 : _GEN_56; // @[ALU.scala 92:68]
   wire  gate_valid_b = opcode_8 & ~opcode_6 & opcode_5 ? _GEN_29 : _GEN_57; // @[ALU.scala 92:68]
   wire  _T_65 = ~opcode_0; // @[ALU.scala 178:20]
-  wire  _GEN_70 = _T_65 ? gate_valid_a : temp_valid_a; // @[ALU.scala 181:35 ALU.scala 182:20 ALU.scala 37:29]
-  wire  _GEN_71 = _T_65 ? gate_valid_b : temp_valid_b; // @[ALU.scala 181:35 ALU.scala 183:20 ALU.scala 38:29]
+  wire  _GEN_70 = opcode_0 ? gate_valid_a : temp_valid_a; // @[ALU.scala 181:35 ALU.scala 182:20 ALU.scala 37:29]
+  wire  _GEN_71 = opcode_0 ? gate_valid_b : temp_valid_b; // @[ALU.scala 181:35 ALU.scala 183:20 ALU.scala 38:29]
   assign io_out_a = temp_result_a; // @[ALU.scala 217:12]
   assign io_out_b = temp_result_b; // @[ALU.scala 218:12]
   assign io_validout_a = temp_valid_a; // @[ALU.scala 219:17]
@@ -169,7 +169,9 @@ module ALU(
       end else begin
         temp_valid_b <= _GEN_71;
       end
-    end else if (!(_T_65)) begin // @[ALU.scala 186:29]
+    end else if (_T_65) begin // @[ALU.scala 186:29]
+      temp_valid_b <= gate_valid_b; // @[ALU.scala 188:20]
+    end else begin
       temp_valid_b <= _GEN_71;
     end
   end
