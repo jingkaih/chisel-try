@@ -73,10 +73,10 @@ class ALU(width: Int = 64) extends Module {
       temp_result_b := gate_b//invalidated anyway
     }
   }.elsewhen(opcode(8) === 0.B && opcode(7) === 0.B){ //Splitter;NOT
-    when(opcode(5) === 1.B){// Splitter                            opcode(6) not specified, problem might occur
+    when(opcode(5) === 0.B){// Splitter                            opcode(6) not specified, problem might occur
       temp_result_a := gate_a
       temp_result_b := gate_b//                                    possibly valid output b, unlike above
-    }.elsewhen(opcode(5) === 0.B){// NOTT
+    }.elsewhen(opcode(5) === 1.B){// NOTT
       temp_result_a := ~gate_a
       temp_result_b := gate_b
     }
