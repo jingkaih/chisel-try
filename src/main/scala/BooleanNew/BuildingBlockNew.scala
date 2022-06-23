@@ -13,7 +13,7 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
     val wr_en_mem4 = Input(Bool())
     val wr_en_mem5 = Input(Bool())
     val wr_en_mem6 = Input(Bool())
-    val wr_instr_mem1 = Input(UInt(288.W))////////记得改成192; 224
+    val wr_instr_mem1 = Input(UInt(288.W))
     val wr_instr_mem2 = Input(UInt(128.W))
     val wr_instr_mem3 = Input(UInt(128.W))
     val wr_instr_mem4 = Input(UInt(128.W))
@@ -48,7 +48,7 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
   val wrAddr4 = RegInit(0.U(8.W))
   val wrAddr5 = RegInit(0.U(8.W))
   val wrAddr6 = RegInit(0.U(8.W))
-  val instr1 = Reg(UInt(288.W))////////记得改成192
+  val instr1 = Reg(UInt(288.W))
   val instr2 = Reg(UInt(128.W))
   val instr3 = Reg(UInt(128.W))
   val instr4 = Reg(UInt(128.W))

@@ -20,7 +20,7 @@ class BP(PEnum: Int = 21, dataWidth: Int = 4) extends Module{
     val wr_en_mem4 = Vec(PEnum, Input(Bool()))
     val wr_en_mem5 = Vec(PEnum, Input(Bool()))
     val wr_en_mem6 = Vec(PEnum, Input(Bool()))
-    val wr_instr_mem1 = Vec(PEnum, Input(UInt(288.W)))//change to 192!!
+    val wr_instr_mem1 = Vec(PEnum, Input(UInt(288.W)))
     val wr_instr_mem2 = Vec(PEnum, Input(UInt(128.W)))
     val wr_instr_mem3 = Vec(PEnum, Input(UInt(128.W)))
     val wr_instr_mem4 = Vec(PEnum, Input(UInt(128.W)))
@@ -52,11 +52,14 @@ class BP(PEnum: Int = 21, dataWidth: Int = 4) extends Module{
 
 //  inputDataBuffer(wr_Addr_inBuf) := DontCare
 //  inputTagBuffer(wr_Addr_inBuf_1) := DontCare
-  inputDataBuffer.write(wr_Addr_inBuf, io.wr_D_inBuf)// continuously write data into data MEM every cycle when wr_Addr_en is 1
-  inputTagBuffer.write(wr_Addr_inBuf_1, io.wr_Tag_inBuf)
+
+//  inputDataBuffer.write(wr_Addr_inBuf, io.wr_D_inBuf)// continuously write data into data MEM every cycle when wr_Addr_en is 1
+//  inputTagBuffer.write(wr_Addr_inBuf_1, io.wr_Tag_inBuf)
   when(io.wr_Addr_inBuf_en){
     wr_Addr_inBuf := wr_Addr_inBuf + 1.U
     wr_Addr_inBuf_1 := wr_Addr_inBuf_1 + 1.U
+    inputDataBuffer.write(wr_Addr_inBuf, io.wr_D_inBuf)// continuously write data into data MEM every cycle when wr_Addr_en is 1
+    inputTagBuffer.write(wr_Addr_inBuf_1, io.wr_Tag_inBuf)
   }
 
   //output buffer read
