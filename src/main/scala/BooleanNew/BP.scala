@@ -52,15 +52,18 @@ class BP(PEnum: Int = 21, dataWidth: Int = 4) extends Module{
 
 //  inputDataBuffer(wr_Addr_inBuf) := DontCare
 //  inputTagBuffer(wr_Addr_inBuf_1) := DontCare
-
+  val wr_Addr_inBuf_en_reg = RegNext(io.wr_Addr_inBuf_en)
 //  inputDataBuffer.write(wr_Addr_inBuf, io.wr_D_inBuf)// continuously write data into data MEM every cycle when wr_Addr_en is 1
 //  inputTagBuffer.write(wr_Addr_inBuf_1, io.wr_Tag_inBuf)
   when(io.wr_Addr_inBuf_en){
-    wr_Addr_inBuf := wr_Addr_inBuf + 1.U
-    wr_Addr_inBuf_1 := wr_Addr_inBuf_1 + 1.U
     inputDataBuffer.write(wr_Addr_inBuf, io.wr_D_inBuf)// continuously write data into data MEM every cycle when wr_Addr_en is 1
     inputTagBuffer.write(wr_Addr_inBuf_1, io.wr_Tag_inBuf)
   }
+  when(wr_Addr_inBuf_en_reg){
+    wr_Addr_inBuf := wr_Addr_inBuf + 1.U
+    wr_Addr_inBuf_1 := wr_Addr_inBuf_1 + 1.U
+  }
+
 
   //output buffer read
 //  val rd_D_outBuf = Vec(64, Reg(new MEMDataBundle()))
