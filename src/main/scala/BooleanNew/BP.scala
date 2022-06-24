@@ -91,8 +91,10 @@ class BP(PEnum: Int = 21, dataWidth: Int = 4) extends Module{
   val rd_D_inBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
   val rd_Tag_inBuf = RegInit(0.U(2.W))
 
-  rd_D_inBuf := inputDataBuffer.read(rd_Addr_inBuf)
-  rd_Tag_inBuf := inputTagBuffer.read(rd_Addr_inBuf_1)
+//  rd_D_inBuf := inputDataBuffer.read(rd_Addr_inBuf)
+//  rd_Tag_inBuf := inputTagBuffer.read(rd_Addr_inBuf_1)
+  rd_D_inBuf := inputDataBuffer(rd_Addr_inBuf)
+  rd_Tag_inBuf := inputTagBuffer(rd_Addr_inBuf_1)
   when(io.beginRun){
     rd_Addr_inBuf := rd_Addr_inBuf + 1.U
     rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
