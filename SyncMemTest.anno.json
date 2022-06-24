@@ -1,10 +1,5 @@
 [
   {
-    "class":"firrtl.passes.memlib.ReplSeqMemAnnotation",
-    "inputFileName":"",
-    "outputConfig":"Buffer.mem.conf"
-  },
-  {
     "class":"firrtl.EmitCircuitAnnotation",
     "emitter":"firrtl.VerilogEmitter"
   },

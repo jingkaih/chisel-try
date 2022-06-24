@@ -48,12 +48,20 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
   val wrAddr4 = RegInit(0.U(8.W))
   val wrAddr5 = RegInit(0.U(8.W))
   val wrAddr6 = RegInit(0.U(8.W))
-  val instr1 = Reg(UInt(288.W))
-  val instr2 = Reg(UInt(128.W))
-  val instr3 = Reg(UInt(128.W))
-  val instr4 = Reg(UInt(128.W))
-  val instr5 = Reg(UInt(128.W))
-  val instr6 = Reg(UInt(128.W))
+
+//  val instr1 = Reg(UInt(288.W))
+//  val instr2 = Reg(UInt(128.W))
+//  val instr3 = Reg(UInt(128.W))
+//  val instr4 = Reg(UInt(128.W))
+//  val instr5 = Reg(UInt(128.W))
+//  val instr6 = Reg(UInt(128.W))
+    val instr1 = Wire(UInt(288.W))
+    val instr2 = Wire(UInt(128.W))
+    val instr3 = Wire(UInt(128.W))
+    val instr4 = Wire(UInt(128.W))
+    val instr5 = Wire(UInt(128.W))
+    val instr6 = Wire(UInt(128.W))
+
   //  val run1 = io.run_in
   //  val run2 = RegNext(io.run_in)//1 cycle later, you start reading from Mem2
   //  val run3 = RegNext(RegNext(io.run_in))//2 cycles later, you start reading from Mem3
@@ -204,12 +212,13 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
 //    instr6 := Mem6.read(PC6)
 //  }
 
-  val MemAddr1 = Wire(UInt(8.W))
-  val MemAddr2 = Wire(UInt(8.W))
-  val MemAddr3 = Wire(UInt(8.W))
-  val MemAddr4 = Wire(UInt(8.W))
-  val MemAddr5 = Wire(UInt(8.W))
-  val MemAddr6 = Wire(UInt(8.W))
+  val MemAddr1 = WireInit(0.U(8.W))
+  val MemAddr2 = WireInit(0.U(8.W))
+  val MemAddr3 = WireInit(0.U(8.W))
+  val MemAddr4 = WireInit(0.U(8.W))
+  val MemAddr5 = WireInit(0.U(8.W))
+  val MemAddr6 = WireInit(0.U(8.W))
+
 
   when(io.wr_en_mem1){
     Mem1.write(MemAddr1, io.wr_instr_mem1)
@@ -228,7 +237,6 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
   } .otherwise{
     instr2 := Mem2.read(MemAddr2)
     MemAddr2 := PC2
-
   }
   when(io.wr_en_mem3){
     Mem3.write(MemAddr3, io.wr_instr_mem3)

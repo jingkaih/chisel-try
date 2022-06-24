@@ -29,6 +29,6 @@ class SyncMemTest extends Module{
 }
 object SyncMemMain extends App {
   println("Hello World, I will now generate the Verilog file!")
-//  (new chisel3.stage.ChiselStage).emitVerilog(new SyncMemTest())
-  (new chisel3.stage.ChiselStage).emitVerilog(new SyncMemTest(), Array("--repl-seq-mem", "-c:SyncMemTest:-o:Buffer.mem.conf"))
+  (new chisel3.stage.ChiselStage).emitVerilog(new SyncMemTest())
+//  (new chisel3.stage.ChiselStage).emitVerilog(new SyncMemTest(), Array("--repl-seq-mem", "-c:SyncMemTest:-o:Buffer.mem.conf"))
 }
