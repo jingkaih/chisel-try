@@ -30537,9 +30537,10 @@ module BP(
       inputDataBuffer_0_data[inputDataBuffer_0_data_MPORT_addr] <= inputDataBuffer_0_data_MPORT_data; // @[BP.scala 42:36]
     end
     inputDataBuffer_0_data_MPORT_3_en_pipe_0 <= io_beginRun;
-    if (io_beginRun) begin
-      inputDataBuffer_0_data_MPORT_3_addr_pipe_0 <= rd_Addr_inBuf;
-    end
+//    if (io_beginRun) begin
+//      inputDataBuffer_0_data_MPORT_3_addr_pipe_0 <= rd_Addr_inBuf;
+//    end
+    inputDataBuffer_0_data_MPORT_3_addr_pipe_0 <= rd_Addr_inBuf;
     if(inputDataBuffer_1_validBit_MPORT_en & inputDataBuffer_1_validBit_MPORT_mask) begin
       inputDataBuffer_1_validBit[inputDataBuffer_1_validBit_MPORT_addr] <= inputDataBuffer_1_validBit_MPORT_data; // @[BP.scala 42:36]
     end
