@@ -1703,263 +1703,263 @@ module CrossBarSwitch(
   reg [31:0] _RAND_2;
   reg [31:0] _RAND_3;
 `endif // RANDOMIZE_REG_INIT
-  wire [4:0] cells_2d_0_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_0_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_0_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_0_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_0_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_1_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_1_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_1_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_1_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_1_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_2_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_2_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_2_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_2_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_2_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_3_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_3_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_3_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_3_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_3_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_4_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_4_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_4_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_4_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_4_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_5_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_5_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_5_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_5_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_5_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_6_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_6_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_6_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_6_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_6_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_7_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_7_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_7_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_7_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_7_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_8_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_8_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_8_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_8_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_8_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_9_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_9_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_9_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_9_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_9_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_10_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_10_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_10_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_10_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_10_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_11_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_11_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_11_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_11_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_11_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_12_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_12_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_12_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_12_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_12_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_13_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_13_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_13_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_13_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_13_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_14_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_14_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_14_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_14_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_14_io_sel; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_15_io_fw_left; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_15_io_fw_top; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_15_io_fw_bottom; // @[CrossBarSwitch.scala 37:53]
-  wire [4:0] cells_2d_15_io_fw_right; // @[CrossBarSwitch.scala 37:53]
-  wire  cells_2d_15_io_sel; // @[CrossBarSwitch.scala 37:53]
-  reg [4:0] fw_left_reg_0; // @[CrossBarSwitch.scala 33:28]
-  reg [4:0] fw_left_reg_1; // @[CrossBarSwitch.scala 33:28]
-  reg [4:0] fw_left_reg_2; // @[CrossBarSwitch.scala 33:28]
-  reg [4:0] fw_left_reg_3; // @[CrossBarSwitch.scala 33:28]
+  wire [4:0] cells_2d_0_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_0_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_0_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_0_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_0_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_1_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_1_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_1_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_1_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_1_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_2_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_2_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_2_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_2_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_2_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_3_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_3_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_3_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_3_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_3_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_4_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_4_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_4_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_4_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_4_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_5_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_5_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_5_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_5_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_5_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_6_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_6_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_6_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_6_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_6_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_7_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_7_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_7_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_7_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_7_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_8_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_8_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_8_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_8_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_8_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_9_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_9_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_9_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_9_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_9_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_10_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_10_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_10_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_10_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_10_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_11_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_11_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_11_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_11_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_11_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_12_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_12_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_12_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_12_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_12_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_13_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_13_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_13_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_13_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_13_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_14_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_14_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_14_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_14_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_14_io_sel; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_15_io_fw_left; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_15_io_fw_top; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_15_io_fw_bottom; // @[CrossBarSwitch.scala 99:53]
+  wire [4:0] cells_2d_15_io_fw_right; // @[CrossBarSwitch.scala 99:53]
+  wire  cells_2d_15_io_sel; // @[CrossBarSwitch.scala 99:53]
+  reg [4:0] fw_bottom_reg_0; // @[CrossBarSwitch.scala 96:26]
+  reg [4:0] fw_bottom_reg_1; // @[CrossBarSwitch.scala 96:26]
+  reg [4:0] fw_bottom_reg_2; // @[CrossBarSwitch.scala 96:26]
+  reg [4:0] fw_bottom_reg_3; // @[CrossBarSwitch.scala 96:26]
   wire [3:0] select_onehot_0 = 4'h1 << io_select_0; // @[OneHot.scala 65:12]
   wire [3:0] select_onehot_1 = 4'h1 << io_select_1; // @[OneHot.scala 65:12]
   wire [3:0] select_onehot_2 = 4'h1 << io_select_2; // @[OneHot.scala 65:12]
   wire [3:0] select_onehot_3 = 4'h1 << io_select_3; // @[OneHot.scala 65:12]
-  CrossBarCell cells_2d_0 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_0 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_0_io_fw_left),
     .io_fw_top(cells_2d_0_io_fw_top),
     .io_fw_bottom(cells_2d_0_io_fw_bottom),
     .io_fw_right(cells_2d_0_io_fw_right),
     .io_sel(cells_2d_0_io_sel)
   );
-  CrossBarCell cells_2d_1 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_1 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_1_io_fw_left),
     .io_fw_top(cells_2d_1_io_fw_top),
     .io_fw_bottom(cells_2d_1_io_fw_bottom),
     .io_fw_right(cells_2d_1_io_fw_right),
     .io_sel(cells_2d_1_io_sel)
   );
-  CrossBarCell cells_2d_2 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_2 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_2_io_fw_left),
     .io_fw_top(cells_2d_2_io_fw_top),
     .io_fw_bottom(cells_2d_2_io_fw_bottom),
     .io_fw_right(cells_2d_2_io_fw_right),
     .io_sel(cells_2d_2_io_sel)
   );
-  CrossBarCell cells_2d_3 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_3 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_3_io_fw_left),
     .io_fw_top(cells_2d_3_io_fw_top),
     .io_fw_bottom(cells_2d_3_io_fw_bottom),
     .io_fw_right(cells_2d_3_io_fw_right),
     .io_sel(cells_2d_3_io_sel)
   );
-  CrossBarCell cells_2d_4 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_4 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_4_io_fw_left),
     .io_fw_top(cells_2d_4_io_fw_top),
     .io_fw_bottom(cells_2d_4_io_fw_bottom),
     .io_fw_right(cells_2d_4_io_fw_right),
     .io_sel(cells_2d_4_io_sel)
   );
-  CrossBarCell cells_2d_5 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_5 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_5_io_fw_left),
     .io_fw_top(cells_2d_5_io_fw_top),
     .io_fw_bottom(cells_2d_5_io_fw_bottom),
     .io_fw_right(cells_2d_5_io_fw_right),
     .io_sel(cells_2d_5_io_sel)
   );
-  CrossBarCell cells_2d_6 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_6 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_6_io_fw_left),
     .io_fw_top(cells_2d_6_io_fw_top),
     .io_fw_bottom(cells_2d_6_io_fw_bottom),
     .io_fw_right(cells_2d_6_io_fw_right),
     .io_sel(cells_2d_6_io_sel)
   );
-  CrossBarCell cells_2d_7 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_7 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_7_io_fw_left),
     .io_fw_top(cells_2d_7_io_fw_top),
     .io_fw_bottom(cells_2d_7_io_fw_bottom),
     .io_fw_right(cells_2d_7_io_fw_right),
     .io_sel(cells_2d_7_io_sel)
   );
-  CrossBarCell cells_2d_8 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_8 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_8_io_fw_left),
     .io_fw_top(cells_2d_8_io_fw_top),
     .io_fw_bottom(cells_2d_8_io_fw_bottom),
     .io_fw_right(cells_2d_8_io_fw_right),
     .io_sel(cells_2d_8_io_sel)
   );
-  CrossBarCell cells_2d_9 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_9 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_9_io_fw_left),
     .io_fw_top(cells_2d_9_io_fw_top),
     .io_fw_bottom(cells_2d_9_io_fw_bottom),
     .io_fw_right(cells_2d_9_io_fw_right),
     .io_sel(cells_2d_9_io_sel)
   );
-  CrossBarCell cells_2d_10 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_10 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_10_io_fw_left),
     .io_fw_top(cells_2d_10_io_fw_top),
     .io_fw_bottom(cells_2d_10_io_fw_bottom),
     .io_fw_right(cells_2d_10_io_fw_right),
     .io_sel(cells_2d_10_io_sel)
   );
-  CrossBarCell cells_2d_11 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_11 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_11_io_fw_left),
     .io_fw_top(cells_2d_11_io_fw_top),
     .io_fw_bottom(cells_2d_11_io_fw_bottom),
     .io_fw_right(cells_2d_11_io_fw_right),
     .io_sel(cells_2d_11_io_sel)
   );
-  CrossBarCell cells_2d_12 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_12 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_12_io_fw_left),
     .io_fw_top(cells_2d_12_io_fw_top),
     .io_fw_bottom(cells_2d_12_io_fw_bottom),
     .io_fw_right(cells_2d_12_io_fw_right),
     .io_sel(cells_2d_12_io_sel)
   );
-  CrossBarCell cells_2d_13 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_13 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_13_io_fw_left),
     .io_fw_top(cells_2d_13_io_fw_top),
     .io_fw_bottom(cells_2d_13_io_fw_bottom),
     .io_fw_right(cells_2d_13_io_fw_right),
     .io_sel(cells_2d_13_io_sel)
   );
-  CrossBarCell cells_2d_14 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_14 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_14_io_fw_left),
     .io_fw_top(cells_2d_14_io_fw_top),
     .io_fw_bottom(cells_2d_14_io_fw_bottom),
     .io_fw_right(cells_2d_14_io_fw_right),
     .io_sel(cells_2d_14_io_sel)
   );
-  CrossBarCell cells_2d_15 ( // @[CrossBarSwitch.scala 37:53]
+  CrossBarCell cells_2d_15 ( // @[CrossBarSwitch.scala 99:53]
     .io_fw_left(cells_2d_15_io_fw_left),
     .io_fw_top(cells_2d_15_io_fw_top),
     .io_fw_bottom(cells_2d_15_io_fw_bottom),
     .io_fw_right(cells_2d_15_io_fw_right),
     .io_sel(cells_2d_15_io_sel)
   );
-  assign io_fw_bottom_0 = cells_2d_12_io_fw_bottom; // @[CrossBarSwitch.scala 77:21]
-  assign io_fw_bottom_1 = cells_2d_13_io_fw_bottom; // @[CrossBarSwitch.scala 77:21]
-  assign io_fw_bottom_2 = cells_2d_14_io_fw_bottom; // @[CrossBarSwitch.scala 77:21]
-  assign io_fw_bottom_3 = cells_2d_15_io_fw_bottom; // @[CrossBarSwitch.scala 77:21]
-  assign cells_2d_0_io_fw_left = fw_left_reg_0; // @[CrossBarSwitch.scala 62:29]
-  assign cells_2d_0_io_fw_top = 5'h0; // @[CrossBarSwitch.scala 55:28]
-  assign cells_2d_0_io_sel = select_onehot_0[0]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_1_io_fw_left = cells_2d_0_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_1_io_fw_top = 5'h0; // @[CrossBarSwitch.scala 55:28]
-  assign cells_2d_1_io_sel = select_onehot_1[0]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_2_io_fw_left = cells_2d_1_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_2_io_fw_top = 5'h0; // @[CrossBarSwitch.scala 55:28]
-  assign cells_2d_2_io_sel = select_onehot_2[0]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_3_io_fw_left = cells_2d_2_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_3_io_fw_top = 5'h0; // @[CrossBarSwitch.scala 55:28]
-  assign cells_2d_3_io_sel = select_onehot_3[0]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_4_io_fw_left = fw_left_reg_1; // @[CrossBarSwitch.scala 62:29]
-  assign cells_2d_4_io_fw_top = cells_2d_0_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_4_io_sel = select_onehot_0[1]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_5_io_fw_left = cells_2d_4_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_5_io_fw_top = cells_2d_1_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_5_io_sel = select_onehot_1[1]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_6_io_fw_left = cells_2d_5_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_6_io_fw_top = cells_2d_2_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_6_io_sel = select_onehot_2[1]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_7_io_fw_left = cells_2d_6_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_7_io_fw_top = cells_2d_3_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_7_io_sel = select_onehot_3[1]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_8_io_fw_left = fw_left_reg_2; // @[CrossBarSwitch.scala 62:29]
-  assign cells_2d_8_io_fw_top = cells_2d_4_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_8_io_sel = select_onehot_0[2]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_9_io_fw_left = cells_2d_8_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_9_io_fw_top = cells_2d_5_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_9_io_sel = select_onehot_1[2]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_10_io_fw_left = cells_2d_9_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_10_io_fw_top = cells_2d_6_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_10_io_sel = select_onehot_2[2]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_11_io_fw_left = cells_2d_10_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_11_io_fw_top = cells_2d_7_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_11_io_sel = select_onehot_3[2]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_12_io_fw_left = fw_left_reg_3; // @[CrossBarSwitch.scala 62:29]
-  assign cells_2d_12_io_fw_top = cells_2d_8_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_12_io_sel = select_onehot_0[3]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_13_io_fw_left = cells_2d_12_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_13_io_fw_top = cells_2d_9_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_13_io_sel = select_onehot_1[3]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_14_io_fw_left = cells_2d_13_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_14_io_fw_top = cells_2d_10_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_14_io_sel = select_onehot_2[3]; // @[CrossBarSwitch.scala 70:44]
-  assign cells_2d_15_io_fw_left = cells_2d_14_io_fw_right; // @[CrossBarSwitch.scala 66:29]
-  assign cells_2d_15_io_fw_top = cells_2d_11_io_fw_bottom; // @[CrossBarSwitch.scala 58:28]
-  assign cells_2d_15_io_sel = select_onehot_3[3]; // @[CrossBarSwitch.scala 70:44]
+  assign io_fw_bottom_0 = fw_bottom_reg_0; // @[CrossBarSwitch.scala 143:16]
+  assign io_fw_bottom_1 = fw_bottom_reg_1; // @[CrossBarSwitch.scala 143:16]
+  assign io_fw_bottom_2 = fw_bottom_reg_2; // @[CrossBarSwitch.scala 143:16]
+  assign io_fw_bottom_3 = fw_bottom_reg_3; // @[CrossBarSwitch.scala 143:16]
+  assign cells_2d_0_io_fw_left = io_fw_left_0; // @[CrossBarSwitch.scala 125:29]
+  assign cells_2d_0_io_fw_top = 5'h0; // @[CrossBarSwitch.scala 117:28]
+  assign cells_2d_0_io_sel = select_onehot_0[0]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_1_io_fw_left = cells_2d_0_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_1_io_fw_top = 5'h0; // @[CrossBarSwitch.scala 117:28]
+  assign cells_2d_1_io_sel = select_onehot_1[0]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_2_io_fw_left = cells_2d_1_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_2_io_fw_top = 5'h0; // @[CrossBarSwitch.scala 117:28]
+  assign cells_2d_2_io_sel = select_onehot_2[0]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_3_io_fw_left = cells_2d_2_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_3_io_fw_top = 5'h0; // @[CrossBarSwitch.scala 117:28]
+  assign cells_2d_3_io_sel = select_onehot_3[0]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_4_io_fw_left = io_fw_left_1; // @[CrossBarSwitch.scala 125:29]
+  assign cells_2d_4_io_fw_top = cells_2d_0_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_4_io_sel = select_onehot_0[1]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_5_io_fw_left = cells_2d_4_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_5_io_fw_top = cells_2d_1_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_5_io_sel = select_onehot_1[1]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_6_io_fw_left = cells_2d_5_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_6_io_fw_top = cells_2d_2_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_6_io_sel = select_onehot_2[1]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_7_io_fw_left = cells_2d_6_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_7_io_fw_top = cells_2d_3_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_7_io_sel = select_onehot_3[1]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_8_io_fw_left = io_fw_left_2; // @[CrossBarSwitch.scala 125:29]
+  assign cells_2d_8_io_fw_top = cells_2d_4_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_8_io_sel = select_onehot_0[2]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_9_io_fw_left = cells_2d_8_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_9_io_fw_top = cells_2d_5_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_9_io_sel = select_onehot_1[2]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_10_io_fw_left = cells_2d_9_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_10_io_fw_top = cells_2d_6_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_10_io_sel = select_onehot_2[2]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_11_io_fw_left = cells_2d_10_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_11_io_fw_top = cells_2d_7_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_11_io_sel = select_onehot_3[2]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_12_io_fw_left = io_fw_left_3; // @[CrossBarSwitch.scala 125:29]
+  assign cells_2d_12_io_fw_top = cells_2d_8_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_12_io_sel = select_onehot_0[3]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_13_io_fw_left = cells_2d_12_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_13_io_fw_top = cells_2d_9_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_13_io_sel = select_onehot_1[3]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_14_io_fw_left = cells_2d_13_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_14_io_fw_top = cells_2d_10_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_14_io_sel = select_onehot_2[3]; // @[CrossBarSwitch.scala 132:44]
+  assign cells_2d_15_io_fw_left = cells_2d_14_io_fw_right; // @[CrossBarSwitch.scala 128:29]
+  assign cells_2d_15_io_fw_top = cells_2d_11_io_fw_bottom; // @[CrossBarSwitch.scala 120:28]
+  assign cells_2d_15_io_sel = select_onehot_3[3]; // @[CrossBarSwitch.scala 132:44]
   always @(posedge clock) begin
-    fw_left_reg_0 <= io_fw_left_0; // @[CrossBarSwitch.scala 33:28]
-    fw_left_reg_1 <= io_fw_left_1; // @[CrossBarSwitch.scala 33:28]
-    fw_left_reg_2 <= io_fw_left_2; // @[CrossBarSwitch.scala 33:28]
-    fw_left_reg_3 <= io_fw_left_3; // @[CrossBarSwitch.scala 33:28]
+    fw_bottom_reg_0 <= cells_2d_12_io_fw_bottom; // @[CrossBarSwitch.scala 140:22]
+    fw_bottom_reg_1 <= cells_2d_13_io_fw_bottom; // @[CrossBarSwitch.scala 140:22]
+    fw_bottom_reg_2 <= cells_2d_14_io_fw_bottom; // @[CrossBarSwitch.scala 140:22]
+    fw_bottom_reg_3 <= cells_2d_15_io_fw_bottom; // @[CrossBarSwitch.scala 140:22]
   end
 // Register and memory initialization
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
@@ -1998,13 +1998,13 @@ initial begin
     `endif
 `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
-  fw_left_reg_0 = _RAND_0[4:0];
+  fw_bottom_reg_0 = _RAND_0[4:0];
   _RAND_1 = {1{`RANDOM}};
-  fw_left_reg_1 = _RAND_1[4:0];
+  fw_bottom_reg_1 = _RAND_1[4:0];
   _RAND_2 = {1{`RANDOM}};
-  fw_left_reg_2 = _RAND_2[4:0];
+  fw_bottom_reg_2 = _RAND_2[4:0];
   _RAND_3 = {1{`RANDOM}};
-  fw_left_reg_3 = _RAND_3[4:0];
+  fw_bottom_reg_3 = _RAND_3[4:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -30535,10 +30535,9 @@ module BP(
       inputDataBuffer_0_data[inputDataBuffer_0_data_MPORT_addr] <= inputDataBuffer_0_data_MPORT_data; // @[BP.scala 42:36]
     end
     inputDataBuffer_0_data_MPORT_3_en_pipe_0 <= io_beginRun;
-    //if (io_beginRun) begin
-      //inputDataBuffer_0_data_MPORT_3_addr_pipe_0 <= rd_Addr_inBuf;
-    //end
-    inputDataBuffer_0_data_MPORT_3_addr_pipe_0 <= rd_Addr_inBuf;
+    if (io_beginRun) begin
+      inputDataBuffer_0_data_MPORT_3_addr_pipe_0 <= rd_Addr_inBuf;
+    end
     if(inputDataBuffer_1_validBit_MPORT_en & inputDataBuffer_1_validBit_MPORT_mask) begin
       inputDataBuffer_1_validBit[inputDataBuffer_1_validBit_MPORT_addr] <= inputDataBuffer_1_validBit_MPORT_data; // @[BP.scala 42:36]
     end
