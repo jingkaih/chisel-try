@@ -532,10 +532,10 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
 //
 //}
 
-object BuildBlockNewMain extends App {
-  println("Hello World, I will now generate the Verilog file!")
-  (new chisel3.stage.ChiselStage).emitVerilog(new BuildingBlockNew(dataWidth = 4))
-}
+//object BuildBlockNewMain extends App {
+//  println("Hello World, I will now generate the Verilog file!")
+//  (new chisel3.stage.ChiselStage).emitVerilog(new BuildingBlockNew(dataWidth = 4))
+//}
 
 
 // use this for OpenRAM
