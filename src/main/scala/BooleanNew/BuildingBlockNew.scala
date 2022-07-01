@@ -30,7 +30,7 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
     val Tag_out = Output(UInt(2.W))
   })
 
-  val Mem1 = SyncReadMem(256, UInt(288.W))////////记得改成192
+  val Mem1 = SyncReadMem(256, UInt(288.W))
   val Mem2 = SyncReadMem(256, UInt(128.W))
   val Mem3 = SyncReadMem(256, UInt(128.W))
   val Mem4 = SyncReadMem(256, UInt(128.W))

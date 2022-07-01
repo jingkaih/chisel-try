@@ -8,24 +8,24 @@ class MEMDataBundle(dataWidth: Int = 64) extends Bundle{
   val data = UInt(dataWidth.W)
 }
 
-class BP(PEnum: Int = 21, dataWidth: Int = 64) extends Module{
+class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   val io = IO(new Bundle{
     //    val d_in = Vec(32, Input(new PEDataBundle()))
     //    val d_out = Vec(32, Output(new PEDataBundle()))
 
     //instruction memory
-    val wr_en_mem1 = Vec(PEnum, Input(Bool()))
-    val wr_en_mem2 = Vec(PEnum, Input(Bool()))
-    val wr_en_mem3 = Vec(PEnum, Input(Bool()))
-    val wr_en_mem4 = Vec(PEnum, Input(Bool()))
-    val wr_en_mem5 = Vec(PEnum, Input(Bool()))
-    val wr_en_mem6 = Vec(PEnum, Input(Bool()))
-    val wr_instr_mem1 = Vec(PEnum, Input(UInt(288.W)))
-    val wr_instr_mem2 = Vec(PEnum, Input(UInt(128.W)))
-    val wr_instr_mem3 = Vec(PEnum, Input(UInt(128.W)))
-    val wr_instr_mem4 = Vec(PEnum, Input(UInt(128.W)))
-    val wr_instr_mem5 = Vec(PEnum, Input(UInt(128.W)))
-    val wr_instr_mem6 = Vec(PEnum, Input(UInt(128.W)))
+    val wr_en_mem1 = Vec(PEcolCnt, Input(Bool()))
+    val wr_en_mem2 = Vec(PEcolCnt, Input(Bool()))
+    val wr_en_mem3 = Vec(PEcolCnt, Input(Bool()))
+    val wr_en_mem4 = Vec(PEcolCnt, Input(Bool()))
+    val wr_en_mem5 = Vec(PEcolCnt, Input(Bool()))
+    val wr_en_mem6 = Vec(PEcolCnt, Input(Bool()))
+    val wr_instr_mem1 = Vec(PEcolCnt, Input(UInt(288.W)))
+    val wr_instr_mem2 = Vec(PEcolCnt, Input(UInt(128.W)))
+    val wr_instr_mem3 = Vec(PEcolCnt, Input(UInt(128.W)))
+    val wr_instr_mem4 = Vec(PEcolCnt, Input(UInt(128.W)))
+    val wr_instr_mem5 = Vec(PEcolCnt, Input(UInt(128.W)))
+    val wr_instr_mem6 = Vec(PEcolCnt, Input(UInt(128.W)))
     val beginRun = Input(Bool())
     //data memory interface (input)
     val wr_D_inBuf = Vec(64, Input(new MEMDataBundle(dataWidth)))//64*65 wide
@@ -42,7 +42,7 @@ class BP(PEnum: Int = 21, dataWidth: Int = 64) extends Module{
   val inputDataBuffer = SyncReadMem(256, banks)
   val inputTagBuffer = SyncReadMem(256, UInt(2.W))
   // 16 Blocks declaration
-  val array = for(i <- 0 until PEnum) yield Module(new BuildingBlockNew(dataWidth=dataWidth))
+  val array = for(i <- 0 until PEcolCnt) yield Module(new BuildingBlockNew(dataWidth=dataWidth))
   // output data memory declaration
   val outputDataBuffer = SyncReadMem(256, banks)// each 65-wide, the MSB is valid bit
   val outputTagBuffer = SyncReadMem(256, UInt(2.W))
@@ -319,7 +319,7 @@ class BP(PEnum: Int = 21, dataWidth: Int = 64) extends Module{
   array(0).io.run_in := io.beginRun
 //  array(0).io.PC1_in := PC
 //  array(0).io.Addr_in := Addr
-  for(i <- 1 until PEnum){
+  for(i <- 1 until PEcolCnt){
     array(i).io.d_in := array(i-1).io.d_out
     array(i).io.Tag_in := array(i-1).io.Tag_out
     array(i).io.wr_en_mem1 := io.wr_en_mem1(i)
@@ -339,35 +339,35 @@ class BP(PEnum: Int = 21, dataWidth: Int = 64) extends Module{
     array(i).io.Addr_in := array(i-1).io.Addr_out
   }
 
-  d_out := array(PEnum-1).io.d_out
-  Tag_out := array(PEnum-1).io.Tag_out
-  Addr_out := array(PEnum-1).io.Addr_out
-//  PC_out := array(PEnum-1).io.PC6_out
-  io.PC_out := array(PEnum-1).io.PC6_out
+  d_out := array(PEcolCnt-1).io.d_out
+  Tag_out := array(PEcolCnt-1).io.Tag_out
+  Addr_out := array(PEcolCnt-1).io.Addr_out
+//  PC_out := array(PEcolCnt-1).io.PC6_out
+  io.PC_out := array(PEcolCnt-1).io.PC6_out
 
 
 }
 
 
 
-//class BP(PEnum: Int = 16) extends Module{
+//class BP(PEcolCnt: Int = 16) extends Module{
 //  val io = IO(new Bundle{
 ////    val d_in = Vec(32, Input(new PEDataBundle()))
 ////    val d_out = Vec(32, Output(new PEDataBundle()))
 //
 //    //instruction memory
-//    val wr_en_mem1 = Vec(PEnum, Input(Bool()))
-//    val wr_en_mem2 = Vec(PEnum, Input(Bool()))
-//    val wr_en_mem3 = Vec(PEnum, Input(Bool()))
-//    val wr_en_mem4 = Vec(PEnum, Input(Bool()))
-//    val wr_en_mem5 = Vec(PEnum, Input(Bool()))
-//    val wr_en_mem6 = Vec(PEnum, Input(Bool()))
-//    val wr_instr_mem1 = Vec(PEnum, Input(UInt(224.W)))//change to 192!!
-//    val wr_instr_mem2 = Vec(PEnum, Input(UInt(128.W)))
-//    val wr_instr_mem3 = Vec(PEnum, Input(UInt(128.W)))
-//    val wr_instr_mem4 = Vec(PEnum, Input(UInt(128.W)))
-//    val wr_instr_mem5 = Vec(PEnum, Input(UInt(128.W)))
-//    val wr_instr_mem6 = Vec(PEnum, Input(UInt(128.W)))
+//    val wr_en_mem1 = Vec(PEcolCnt, Input(Bool()))
+//    val wr_en_mem2 = Vec(PEcolCnt, Input(Bool()))
+//    val wr_en_mem3 = Vec(PEcolCnt, Input(Bool()))
+//    val wr_en_mem4 = Vec(PEcolCnt, Input(Bool()))
+//    val wr_en_mem5 = Vec(PEcolCnt, Input(Bool()))
+//    val wr_en_mem6 = Vec(PEcolCnt, Input(Bool()))
+//    val wr_instr_mem1 = Vec(PEcolCnt, Input(UInt(224.W)))//change to 192!!
+//    val wr_instr_mem2 = Vec(PEcolCnt, Input(UInt(128.W)))
+//    val wr_instr_mem3 = Vec(PEcolCnt, Input(UInt(128.W)))
+//    val wr_instr_mem4 = Vec(PEcolCnt, Input(UInt(128.W)))
+//    val wr_instr_mem5 = Vec(PEcolCnt, Input(UInt(128.W)))
+//    val wr_instr_mem6 = Vec(PEcolCnt, Input(UInt(128.W)))
 //    val beginRun = Input(Bool())// later use this to replace io.run
 //    //data memory interface (input)
 //    val wr_D_inBuf = Vec(64, Input(new MEMDataBundle()))//64*65 wide
@@ -382,7 +382,7 @@ class BP(PEnum: Int = 21, dataWidth: Int = 64) extends Module{
 //  val inputBuffer = Mem(256, banks)
 //  // process unit declaration
 //  val array_0 = Module(new BuildingBlockNewFirst)
-//  val array = for(i <- 1 until PEnum) yield Module(new BuildingBlockNew)
+//  val array = for(i <- 1 until PEcolCnt) yield Module(new BuildingBlockNew)
 //  // output data memory declaration
 //  val outputBuffer = Mem(256, banks)// each 65-wide, the MSB is valid bit
 //
@@ -477,7 +477,7 @@ class BP(PEnum: Int = 21, dataWidth: Int = 64) extends Module{
 //  array(1).io.run_in := array_0.io.run_out
 //  array(1).io.PC1_in := array_0.io.PC6_out
 //  array(1).io.Addr_in := array_0.io.Addr_out
-//  for(i <- 2 until PEnum){
+//  for(i <- 2 until PEcolCnt){
 //    array(i).io.d_in := array(i-1).io.d_out
 //    array(i).io.wr_en_mem1 := io.wr_en_mem1(i)
 //    array(i).io.wr_en_mem2 := io.wr_en_mem2(i)
@@ -496,9 +496,9 @@ class BP(PEnum: Int = 21, dataWidth: Int = 64) extends Module{
 //    array(i).io.Addr_in := array(i-1).io.Addr_out
 //  }
 //
-//  d_out := array(PEnum-1).io.d_out
-//  wr_Addr_outBuf := array(PEnum-1).io.Addr_out
-//  rollBack_PC := array(PEnum-1).io.PC6_out
+//  d_out := array(PEcolCnt-1).io.d_out
+//  wr_Addr_outBuf := array(PEcolCnt-1).io.Addr_out
+//  rollBack_PC := array(PEcolCnt-1).io.PC6_out
 //
 //  val allValidBits = RegInit(0.U(64.W))
 //  val allValidBitsPopCnt = RegInit(0.U(6.W))
@@ -572,7 +572,7 @@ class BP(PEnum: Int = 21, dataWidth: Int = 64) extends Module{
 //  allValidBitsPopCnt := PopCount(allValidBits)
 //
 ////  when(wr_Addr_outBuf =/= 0.U) { // if Addr_out is not 0, which means there are data to be written into output buffer
-//  when(array(PEnum-1).io.run_out =/= 0.U) { // if run_out signal of the last building block is not 0, there are data to be written into output buffer
+//  when(array(PEcolCnt-1).io.run_out =/= 0.U) { // if run_out signal of the last building block is not 0, there are data to be written into output buffer
 //    when(allValidBitsPopCnt === 1.U && lock =/= false.B) { // if there's only 1 output to be valid. We're good
 //      // write to output buffer
 //      // proceed
