@@ -15,17 +15,17 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
 
     //instruction memory
     val wr_en_mem1 = Vec(PEcolCnt, Input(Bool()))
-    val wr_en_mem2 = Vec(PEcolCnt, Input(Bool()))
-    val wr_en_mem3 = Vec(PEcolCnt, Input(Bool()))
-    val wr_en_mem4 = Vec(PEcolCnt, Input(Bool()))
-    val wr_en_mem5 = Vec(PEcolCnt, Input(Bool()))
-    val wr_en_mem6 = Vec(PEcolCnt, Input(Bool()))
+    val wr_en_mem2 = Vec(PEcolCnt - 1, Input(Bool()))
+    val wr_en_mem3 = Vec(PEcolCnt - 1, Input(Bool()))
+    val wr_en_mem4 = Vec(PEcolCnt - 1, Input(Bool()))
+    val wr_en_mem5 = Vec(PEcolCnt - 1, Input(Bool()))
+    val wr_en_mem6 = Vec(PEcolCnt - 1, Input(Bool()))
     val wr_instr_mem1 = Vec(PEcolCnt, Input(UInt(288.W)))
-    val wr_instr_mem2 = Vec(PEcolCnt, Input(UInt(128.W)))
-    val wr_instr_mem3 = Vec(PEcolCnt, Input(UInt(128.W)))
-    val wr_instr_mem4 = Vec(PEcolCnt, Input(UInt(128.W)))
-    val wr_instr_mem5 = Vec(PEcolCnt, Input(UInt(128.W)))
-    val wr_instr_mem6 = Vec(PEcolCnt, Input(UInt(128.W)))
+    val wr_instr_mem2 = Vec(PEcolCnt - 1, Input(UInt(128.W)))
+    val wr_instr_mem3 = Vec(PEcolCnt - 1, Input(UInt(128.W)))
+    val wr_instr_mem4 = Vec(PEcolCnt - 1, Input(UInt(128.W)))
+    val wr_instr_mem5 = Vec(PEcolCnt - 1, Input(UInt(128.W)))
+    val wr_instr_mem6 = Vec(PEcolCnt - 1, Input(UInt(128.W)))
     val beginRun = Input(Bool())
     //data memory interface (input)
     val wr_D_inBuf = Vec(64, Input(new MEMDataBundle(dataWidth)))//64*65 wide
@@ -42,7 +42,8 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   val inputDataBuffer = SyncReadMem(256, banks)
   val inputTagBuffer = SyncReadMem(256, UInt(2.W))
   // 16 Blocks declaration
-  val array = for(i <- 0 until PEcolCnt) yield Module(new BuildingBlockNew(dataWidth=dataWidth))
+  val array = for(i <- 0 until PEcolCnt-1) yield Module(new BuildingBlockNew(dataWidth=dataWidth))
+  val array_last = Module(new BuildingBlockNewLast(dataWidth=dataWidth))
   // output data memory declaration
   val outputDataBuffer = SyncReadMem(256, banks)// each 65-wide, the MSB is valid bit
   val outputTagBuffer = SyncReadMem(256, UInt(2.W))
@@ -319,7 +320,7 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   array(0).io.run_in := io.beginRun
 //  array(0).io.PC1_in := PC
 //  array(0).io.Addr_in := Addr
-  for(i <- 1 until PEcolCnt){
+  for(i <- 1 until PEcolCnt-1){
     array(i).io.d_in := array(i-1).io.d_out
     array(i).io.Tag_in := array(i-1).io.Tag_out
     array(i).io.wr_en_mem1 := io.wr_en_mem1(i)
@@ -338,13 +339,21 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
     array(i).io.PC1_in := array(i-1).io.PC6_out
     array(i).io.Addr_in := array(i-1).io.Addr_out
   }
+  //connect the output of array(PEcolCnt-2) (i.e., the second to last PEcol) to the input of array_last
+  array_last.io.d_in := array(PEcolCnt-2).io.d_out
+  array_last.io.Tag_in := array(PEcolCnt-2).io.Tag_out
+  array_last.io.wr_en_mem1 := io.wr_en_mem1(PEcolCnt-1)
+  array_last.io.wr_instr_mem1 := io.wr_instr_mem1(PEcolCnt-1)
+  array_last.io.run_in := array(PEcolCnt-2).io.run_out
+  array_last.io.PC1_in := array(PEcolCnt-2).io.PC6_out
+  array_last.io.Addr_in := array(PEcolCnt-2).io.Addr_out
 
-  d_out := array(PEcolCnt-1).io.d_out
-  Tag_out := array(PEcolCnt-1).io.Tag_out
-  Addr_out := array(PEcolCnt-1).io.Addr_out
+  // connect the output of array_last to the module output
+  d_out := array_last.io.d_out
+  Tag_out := array_last.io.Tag_out
+  Addr_out := array_last.io.Addr_out
 //  PC_out := array(PEcolCnt-1).io.PC6_out
-  io.PC_out := array(PEcolCnt-1).io.PC6_out
-
+  io.PC_out := array_last.io.PC2_out
 
 }
 
