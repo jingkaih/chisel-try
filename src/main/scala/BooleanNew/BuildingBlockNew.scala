@@ -538,7 +538,7 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
 //}
 
 
-// use this for OpenRAM
+//use this for OpenRAM
 //object  BuildBlockNewMain extends App {
 //  println("Hello World, I will now generate the Verilog file!")
 //  (new chisel3.stage.ChiselStage).emitVerilog(new BuildingBlockNew(), Array("--repl-seq-mem", "-c:BuildingBlockNew:-o:Buffer.mem.conf"))

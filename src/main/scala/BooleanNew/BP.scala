@@ -8,7 +8,7 @@ class MEMDataBundle(dataWidth: Int = 64) extends Bundle{
   val data = UInt(dataWidth.W)
 }
 
-class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
+class BP(PEcolCnt: Int = 16, dataWidth: Int = 64) extends Module{
   val io = IO(new Bundle{
     //    val d_in = Vec(32, Input(new PEDataBundle()))
     //    val d_out = Vec(32, Output(new PEDataBundle()))
@@ -50,21 +50,14 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   val wr_Addr_inBuf = RegInit(0.U(8.W))
   val wr_Addr_inBuf_1 = RegInit(0.U(8.W))
 
-//  inputDataBuffer(wr_Addr_inBuf) := DontCare
-//  inputTagBuffer(wr_Addr_inBuf_1) := DontCare
-  val wr_Addr_inBuf_en_reg = RegNext(io.wr_Addr_inBuf_en)
-//  inputDataBuffer.write(wr_Addr_inBuf, io.wr_D_inBuf)// continuously write data into data MEM every cycle when wr_Addr_en is 1
-//  inputTagBuffer.write(wr_Addr_inBuf_1, io.wr_Tag_inBuf)
+
   when(io.wr_Addr_inBuf_en){
     inputDataBuffer.write(wr_Addr_inBuf, io.wr_D_inBuf)// continuously write data into data MEM every cycle when wr_Addr_en is 1
     inputTagBuffer.write(wr_Addr_inBuf_1, io.wr_Tag_inBuf)
     wr_Addr_inBuf := wr_Addr_inBuf + 1.U
     wr_Addr_inBuf_1 := wr_Addr_inBuf_1 + 1.U
   }
-//  when(wr_Addr_inBuf_en_reg){
-//    wr_Addr_inBuf := wr_Addr_inBuf + 1.U
-//    wr_Addr_inBuf_1 := wr_Addr_inBuf_1 + 1.U
-//  }
+
 
 
   //output buffer read
@@ -72,6 +65,15 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
 //  rd_D_outBuf := outputDataBuffer(io.rd_Addr_outBuf)
 //  io.rd_D_outBuf := rd_D_outBuf
   io.rd_D_outBuf := outputDataBuffer.read(io.rd_Addr_outBuf)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -93,8 +95,7 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   val rd_D_inBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
   val rd_Tag_inBuf = RegInit(0.U(2.W))
 
-//  rd_D_inBuf := inputDataBuffer.read(rd_Addr_inBuf)
-//  rd_Tag_inBuf := inputTagBuffer.read(rd_Addr_inBuf_1)
+
   rd_D_inBuf := inputDataBuffer(rd_Addr_inBuf)
   rd_Tag_inBuf := inputTagBuffer(rd_Addr_inBuf_1)
   when(io.beginRun){
@@ -110,23 +111,25 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
 //  }
 //
 
-  //output buffer starts writing data
-  val wr_Addr_outBuf = RegInit(0.U(8.W))
-  val wr_AddrReg_outBuf = RegNext(wr_Addr_outBuf)
-  val wr_AddrFlwUp_outBuf = RegInit(0.U(8.W))// follow-up write pointer; update not in every cycle
+
+
   val wr_D_outBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))// wire? popcount is wire tho
+  val wr_D_outBuf_reg = RegNext(wr_D_outBuf)// wire? popcount is wire tho
+
   val wr_Tag_outBuf = RegInit(0.U(2.W))
+  val wr_Tag_outBuf_reg = RegNext(wr_Tag_outBuf)
+
   val wr_TagOld_outBuf = RegInit(0.U(2.W))
+
+
   val Addr_out = Wire(UInt(8.W))// the actual addr stream out from the last building block, not always useful
   val Tag_out = Wire(UInt(2.W))
-  wr_Addr_outBuf := Addr_out// self-increment
-  wr_Tag_outBuf := Tag_out
-//  outputDataBuffer(wr_Addr_outBuf) := wr_D_outBuf
-//  outputTagBuffer(wr_Addr_outBuf) := wr_Tag_outBuf
-  outputDataBuffer.write(wr_Addr_outBuf, wr_D_outBuf)
-  outputTagBuffer.write(wr_Addr_outBuf, wr_Tag_outBuf)
+//  wr_Addr_outBuf := Addr_out// self-increment
+//  wr_Tag_outBuf := Tag_out
 
-  val allValidBits = Wire(UInt(64.W))
+
+
+  val allValidBits = WireInit(0.U(64.W))
   allValidBits := Cat(
     wr_D_outBuf( 0 ).validBit,
     wr_D_outBuf( 1 ).validBit,
@@ -195,6 +198,20 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   )
   val allValidBitsPopCnt = RegInit(0.U(6.W))
   allValidBitsPopCnt := PopCount(allValidBits)
+  //output buffer starts writing data
+  val wr_Addr_outBuf = RegInit(0.U(8.W))
+  val wr_AddrReg_outBuf = RegNext(wr_Addr_outBuf)
+  val wr_AddrFlwUp_outBuf = RegInit(0.U(8.W))// follow-up write pointer; update not in every cycle
+
+  when(allValidBitsPopCnt =/= 0.U){
+    wr_Addr_outBuf := wr_Addr_outBuf + 1.U
+    outputDataBuffer.write(wr_Addr_outBuf, wr_D_outBuf_reg)
+    outputTagBuffer.write(wr_Addr_outBuf, wr_Tag_outBuf_reg)
+  }
+
+
+
+
   val DSTWB = RegInit(false.B)//Flag of destined to be written back. Asserted when any popcount result of wr_D_outBuf who are from the same tag family is not equal to 1
 
   wr_TagOld_outBuf := wr_Tag_outBuf
