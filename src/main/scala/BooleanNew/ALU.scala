@@ -176,19 +176,19 @@ class ALU(width: Int = 64) extends Module {
 
   when(opcode(8) === 0.B && opcode(7) === 0.B){//Splitter;NOT
     when(opcode(0) === 0.B) { //invalidate the output port B
-      temp_valid_a := gate_valid_a
+      temp_valid_a := 0.B
       temp_valid_b := 0.B
     }. elsewhen(opcode(0) === 1.B){
       temp_valid_a := gate_valid_a
-      temp_valid_b := gate_valid_b
+      temp_valid_b := 0.B
     }
   }.otherwise{//AND;OR;XOR
     when(opcode(0) === 0.B) { //invalidate the output port A
       temp_valid_a := 0.B
-      temp_valid_b := gate_valid_b
+      temp_valid_b := 0.B
     }. elsewhen(opcode(0) === 1.B){
       temp_valid_a := gate_valid_a
-      temp_valid_b := gate_valid_b
+      temp_valid_b := 0.B
     }
   }
 
