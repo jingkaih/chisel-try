@@ -28443,7 +28443,7 @@ module BP(
     end
     if (reset) begin // @[BP.scala 288:24]
       PCBegin <= 8'h0; // @[BP.scala 288:24]
-    end else if (io_beginRun) begin // @[BP.scala 295:21]
+    end else if (beginRun_reg) begin // @[BP.scala 295:22]
       PCBegin <= _PCBegin_T_1; // @[BP.scala 296:13]
     end
   end

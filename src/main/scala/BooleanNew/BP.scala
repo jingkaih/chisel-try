@@ -292,11 +292,11 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   array(0).io.PC1_in := PCBegin
   array(0).io.Addr_in := AddrBegin
 
-  when(io.beginRun) { // last for only 1 cycle
+  when(beginRun_reg) { // last for only 1 cycle
     PCBegin := PCBegin + 1.U
   }
 
-  when(io.beginRun) { // last for only 1 cycle
+  when(beginRun_reg) { // last for only 1 cycle
     AddrBegin := AddrBegin + 1.U
   }
 
