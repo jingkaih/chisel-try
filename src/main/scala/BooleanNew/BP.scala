@@ -113,8 +113,8 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
 
 
 
-  val wr_D_outBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))// wire? popcount is wire tho
-  val wr_D_outBuf_reg = RegNext(wr_D_outBuf)// wire? popcount is wire tho
+  val wr_D_outBuf = Wire(Vec(64, new MEMDataBundle(dataWidth)))// wire? popcount is wire tho
+  val wr_D_outBuf_reg = RegNext(wr_D_outBuf)//wr_D_outBuf has to be reg 1 cycle so that to synchronize with wr_Addr_outBuf incrementer (becuase popcount will take an extra cycle)
 
   val wr_Tag_outBuf = RegInit(0.U(2.W))
   val wr_Tag_outBuf_reg = RegNext(wr_Tag_outBuf)
