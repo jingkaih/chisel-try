@@ -8,7 +8,12 @@ class MEMDataBundle(dataWidth: Int = 64) extends Bundle{
   val data = UInt(dataWidth.W)
 }
 
-class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
+class MEMTagDataBundle(TagWidth: Int = 2, CounterWidth: Int = 3) extends Bundle{
+  val Tag = UInt(TagWidth.W)
+  val RoundCnt = UInt(CounterWidth.W)
+}
+
+class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{
   val io = IO(new Bundle{
     //    val d_in = Vec(32, Input(new PEDataBundle()))
     //    val d_out = Vec(32, Output(new PEDataBundle()))
@@ -29,7 +34,7 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
     val beginRun = Input(Bool())
     //data memory interface (input)
     val wr_D_inBuf = Vec(64, Input(new MEMDataBundle(dataWidth)))//64*65 wide
-    val wr_Tag_inBuf = Input(UInt(2.W))// attached to wr_D_inBuf
+    val wr_Tag_inBuf = Input(new MEMTagDataBundle(TagWidth, CounterWidth))// attached to wr_D_inBuf
     val wr_Addr_inBuf_en = Input(Bool())// write pointer increment enable
     //data memory interface (output)
     val rd_Addr_outBuf = Input(UInt(8.W))
@@ -40,12 +45,12 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   val banks = Vec(64, new MEMDataBundle(dataWidth))
   // input data memory declaration
   val inputDataBuffer = SyncReadMem(256, banks)
-  val inputTagBuffer = SyncReadMem(256, UInt(2.W))
+  val inputTagBuffer = SyncReadMem(256, new MEMTagDataBundle(TagWidth, CounterWidth))
   // 16 Blocks declaration
-  val array = for(i <- 0 until PEcolCnt) yield Module(new BuildingBlockNew(dataWidth=dataWidth))
+  val array = for(i <- 0 until PEcolCnt) yield Module(new BuildingBlockNew(dataWidth, dataRAMaddrWidth, TagWidth, CounterWidth))
   // output data memory declaration
   val outputDataBuffer = SyncReadMem(256, banks)// each 65-wide, the MSB is valid bit
-  val outputTagBuffer = SyncReadMem(256, UInt(2.W))
+  val outputTagBuffer = SyncReadMem(256, new MEMTagDataBundle(TagWidth, CounterWidth))
   //input buffer(data+tag) write
   val wr_Addr_inBuf = RegInit(0.U(8.W))
   val wr_Addr_inBuf_1 = RegInit(0.U(8.W))
@@ -57,7 +62,6 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
     wr_Addr_inBuf := wr_Addr_inBuf + 1.U
     wr_Addr_inBuf_1 := wr_Addr_inBuf_1 + 1.U
   }
-
 
 
   //output buffer read
@@ -78,27 +82,28 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
 
 
   // depth issue handler
-  val rollBack_D_en = RegInit(false.B)// could last for multiple cycles in case there are multiple cycle output needs to be write back
-  val rollBack_D = Reg(Vec(32, new PEDataBundle(dataWidth)))
-  val rollBack_PC_en = RegInit(false.B)// only last for 1 cycle, and it's the first cycle of rollBack_D_en
-  val rollBack_PC = RegInit(0.U(8.W))// the first cycle of rollBack_D_en, you write this back; the last PC6 -> the first PC1
-  val rollBack_Addr_en = RegInit(false.B)
-  val rollBack_Addr = RegInit(0.U(8.W))// the last cycle of rollBack_D_en, you write this back
-  //  val rollBack_Addr = RegInit(0.U(8.W)) // equivalent to wr_Addr_outBuf, will replace current rd_Addr_inBuf
-  val hold = RegInit(true.B)
-  val wr_Addr_outBuf_hold = RegInit(0.U(8.W))
+//  val rollBack_D_en = RegInit(false.B)// could last for multiple cycles in case there are multiple cycle output needs to be write back
+//  val rollBack_D = Reg(Vec(32, new PEDataBundle(dataWidth)))
+//  val rollBack_PC_en = RegInit(false.B)// only last for 1 cycle, and it's the first cycle of rollBack_D_en
+//  val rollBack_PC = RegInit(0.U(8.W))// the first cycle of rollBack_D_en, you write this back; the last PC6 -> the first PC1
+//  val rollBack_Addr_en = RegInit(false.B)
+//  val rollBack_Addr = RegInit(0.U(8.W))// the last cycle of rollBack_D_en, you write this back
+//  //  val rollBack_Addr = RegInit(0.U(8.W)) // equivalent to wr_Addr_outBuf, will replace current rd_Addr_inBuf
+//  val hold = RegInit(true.B)
+//  val wr_Addr_outBuf_hold = RegInit(0.U(8.W))
 
 
   //input buffer starts reading data
   val rd_Addr_inBuf = RegInit(0.U(8.W))
   val rd_Addr_inBuf_1 = RegInit(0.U(8.W))
   val rd_D_inBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
-  val rd_Tag_inBuf = RegInit(0.U(2.W))
+  val rd_Tag_inBuf = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
 
 
   rd_D_inBuf := inputDataBuffer(rd_Addr_inBuf)
   rd_Tag_inBuf := inputTagBuffer(rd_Addr_inBuf_1)
-  when(io.beginRun){
+  val beginRun_reg = RegNext(io.beginRun)
+  when(beginRun_reg){
     rd_Addr_inBuf := rd_Addr_inBuf + 1.U
     rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
   }
@@ -113,19 +118,34 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
 
 
 
-  val wr_D_outBuf = Wire(Vec(64, new MEMDataBundle(dataWidth)))// wire? popcount is wire tho
+  val wr_D_outBuf = Wire(Vec(64, new MEMDataBundle(dataWidth)))// wire or reg? popcount is wire tho
   val wr_D_outBuf_reg = RegNext(wr_D_outBuf)//wr_D_outBuf has to be reg 1 cycle so that to synchronize with wr_Addr_outBuf incrementer (becuase popcount will take an extra cycle)
 
-  val wr_Tag_outBuf = RegInit(0.U(2.W))
+  val wr_Tag_outBuf = Wire(new MEMTagDataBundle(TagWidth, CounterWidth))
   val wr_Tag_outBuf_reg = RegNext(wr_Tag_outBuf)
 
-  val wr_TagOld_outBuf = RegInit(0.U(2.W))
+  val context_switch = Wire(Bool()) // last for only 1 clk, therefore cannot be used as roll back enable (which takes multiple cycles to read from outBuf)
+  val roll_back = RegInit(0.B)
+  when(wr_Tag_outBuf.Tag =/= wr_Tag_outBuf_reg.Tag){ // wr_Tag_outBuf
+    context_switch := 1.B
+  }. otherwise{
+    context_switch := 0.B
+  }
+  when(context_switch){
+    roll_back := 1.B
+  }
+
+
+
+
+//  val wr_TagOld_outBuf = RegInit(0.U(2.W))
 
 
   val Addr_out = Wire(UInt(8.W))// the actual addr stream out from the last building block, not always useful
-  val Tag_out = Wire(UInt(2.W))
+  val Tag_out = Wire(new MEMTagDataBundle(TagWidth, CounterWidth))
+
 //  wr_Addr_outBuf := Addr_out// self-increment
-//  wr_Tag_outBuf := Tag_out
+  wr_Tag_outBuf := Tag_out
 
 
 
@@ -199,43 +219,45 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   val allValidBitsPopCnt = RegInit(0.U(6.W))
   allValidBitsPopCnt := PopCount(allValidBits)
   //output buffer starts writing data
-  val wr_Addr_outBuf = RegInit(0.U(8.W))
-  val wr_AddrReg_outBuf = RegNext(wr_Addr_outBuf)
-  val wr_AddrFlwUp_outBuf = RegInit(0.U(8.W))// follow-up write pointer; update not in every cycle
+  val wr_Addr_outBuf = RegInit(0.U(8.W)) // the 1st incrementor
+  val wr_Addr_outBuf_1 = RegInit(0.U(8.W)) // the 2nd incrementor, at same rate
+//  val wr_AddrReg_outBuf = RegNext(wr_Addr_outBuf)
+//  val wr_AddrFlwUp_outBuf = RegInit(0.U(8.W))// follow-up write pointer; update not in every cycle
 
   when(allValidBitsPopCnt =/= 0.U){
     wr_Addr_outBuf := wr_Addr_outBuf + 1.U
+    wr_Addr_outBuf_1 := wr_Addr_outBuf_1 + 1.U
     outputDataBuffer.write(wr_Addr_outBuf, wr_D_outBuf_reg)
-    outputTagBuffer.write(wr_Addr_outBuf, wr_Tag_outBuf_reg)
+    outputTagBuffer.write(wr_Addr_outBuf_1, wr_Tag_outBuf_reg)
   }
 
 
 
 
-  val DSTWB = RegInit(false.B)//Flag of destined to be written back. Asserted when any popcount result of wr_D_outBuf who are from the same tag family is not equal to 1
-
-  wr_TagOld_outBuf := wr_Tag_outBuf
-
-  val context_switch = RegInit(true.B)
-  when(wr_TagOld_outBuf =/= wr_Tag_outBuf){
-    context_switch := true.B
-    wr_AddrFlwUp_outBuf := wr_AddrReg_outBuf
-  } .otherwise{
-    context_switch := false.B
-    wr_AddrFlwUp_outBuf := wr_AddrFlwUp_outBuf
-  }
-
-  when(context_switch){
-    when(allValidBitsPopCnt > 1.U){
-      DSTWB := true.B
-    } .otherwise{
-      DSTWB := false.B
-    }
-  } .otherwise{
-    when(allValidBitsPopCnt > 1.U){
-      DSTWB := true.B
-    }
-  }
+//  val DSTWB = RegInit(false.B)//Flag of destined to be written back. Asserted when any popcount result of wr_D_outBuf who are from the same tag family is not equal to 1
+//
+//  wr_TagOld_outBuf := wr_Tag_outBuf
+//
+//  val context_switch = RegInit(true.B)
+//  when(wr_TagOld_outBuf =/= wr_Tag_outBuf){
+//    context_switch := true.B
+//    wr_AddrFlwUp_outBuf := wr_AddrReg_outBuf
+//  } .otherwise{
+//    context_switch := false.B
+//    wr_AddrFlwUp_outBuf := wr_AddrFlwUp_outBuf
+//  }
+//
+//  when(context_switch){
+//    when(allValidBitsPopCnt > 1.U){
+//      DSTWB := true.B
+//    } .otherwise{
+//      DSTWB := false.B
+//    }
+//  } .otherwise{
+//    when(allValidBitsPopCnt > 1.U){
+//      DSTWB := true.B
+//    }
+//  }
 
 
 
@@ -258,46 +280,8 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
     wr_D_outBuf(i*2+1).validBit := d_out(i).valid_b
   }
 
-//  val d_rollBack = Vec(32, Wire(new PEDataBundle(dataWidth)))
-//  val rollBack_D = Reg
-//  for(i <- 0 until 32){
-////    d_rollBack(i).a := wr_D_outBuf(i*2).data
-////    d_rollBack(i).valid_a := wr_D_outBuf(i*2).validBit
-////    d_rollBack(i).b := wr_D_outBuf(i*2+1).data
-////    d_rollBack(i).valid_b := wr_D_outBuf(i*2+1).validBit
-//    d_rollBack(i).a := 并非即时的wr_D_outBuf(i*2).data
-//    d_rollBack(i).valid_a := 并非即时的wr_D_outBuf(i*2).validBit
-//    d_rollBack(i).b := 并非即时的wr_D_outBuf(i*2+1).data
-//    d_rollBack(i).valid_b := 并非即时的wr_D_outBuf(i*2+1).validBit
-//  }
 
 
-
-
-
-//  when(io.beginRun) {
-//    when(!rollBack_D_en) {// last for multiple cycles
-//      array(0).io.d_in := d_in
-//      array(0).io.Tag_in := rd_Tag_inBuf
-//    }.otherwise {
-//      array(0).io.d_in := // you can write these rollBack_D to the d_in in multiple cycles
-//      array(0).io.Tag_in :=
-//    }
-//  }
-//  when(io.beginRun) {
-//    when(!rollBack_PC_en) {// last for only 1 cycle
-//      array(0).io.PC1_in := array(0).io.PC1_in + 1.U
-//    } .otherwise{
-//      array(0).io.PC1_in :=
-//    }
-//  }
-//  when(io.beginRun) {
-//    when(!rollBack_Addr_en) {// last for only 1 cycle
-//      array(0).io.Addr_in := array(0).io.Addr_in + 1.U
-//    } .otherwise{
-//      array(0).io.Addr_in :=
-//    }
-//  }
 
 
 
@@ -333,7 +317,8 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64) extends Module{
   array(0).io.wr_instr_mem4 := io.wr_instr_mem4(0)
   array(0).io.wr_instr_mem5 := io.wr_instr_mem5(0)
   array(0).io.wr_instr_mem6 := io.wr_instr_mem6(0)
-  array(0).io.run_in := io.beginRun
+//  array(0).io.run_in := io.beginRun
+  array(0).io.run_in := beginRun_reg
 //  array(0).io.PC1_in := PC
 //  array(0).io.Addr_in := Addr
   for(i <- 1 until PEcolCnt){

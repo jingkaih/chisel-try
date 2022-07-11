@@ -3,7 +3,7 @@ import chisel3._
 import chisel3.util._
 
 
-class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module{
+class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{
   val io = IO(new Bundle{
     val d_in = Vec(32, Input(new PEDataBundle(dataWidth)))
     val d_out = Vec(32, Output(new PEDataBundle(dataWidth)))
@@ -26,8 +26,8 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
     val PC6_out = Output(UInt(8.W))// Always on. for the last building block, forward this to the 1st PEcol of 1st Building block
     val Addr_in = Input(UInt(8.W))// where I read from the data RAM
     val Addr_out = Output(UInt(8.W))// where I'm going to write to in the output buffer. Modified by detecting logic
-    val Tag_in = Input(UInt(2.W))
-    val Tag_out = Output(UInt(2.W))
+    val Tag_in = Input(new MEMTagDataBundle(TagWidth, CounterWidth))
+    val Tag_out = Output(new MEMTagDataBundle(TagWidth, CounterWidth))
   })
 
   val Mem1 = SyncReadMem(256, UInt(288.W))
@@ -74,18 +74,17 @@ class BuildingBlockNew(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends M
   val run4 = RegNext(run3)//3 cycles later, you start reading from Mem4
   val run5 = RegNext(run4)//4 cycles later, you start reading from Mem5
   val run6 = RegNext(run5)//5 cycles later, you start reading from Mem6
-  io.run_out := run6
+  io.run_out := RegNext(run6) // I missed the RegNext here in the stable version. It produced correct result because this bunch of "run"s are not even used
 
   //  val Addr6 = RegNext(RegNext(RegNext(RegNext(RegNext(io.Addr_in)))))//5 cycles later
   //  io.Addr_out := Addr6
 
-
-  val peCol = Module(new PEcol(dataWidth, instrWidth = 288, dataRAMaddrWidth))
-  val ingress1 = Module(new CLOSingress1(dataWidth, dataRAMaddrWidth))
-  val ingress2 = Module(new CLOSingress2(dataWidth, dataRAMaddrWidth))
-  val middle = Module(new CLOSmiddle(dataWidth, dataRAMaddrWidth))
-  val egress1 = Module(new CLOSegress1(dataWidth, dataRAMaddrWidth))
-  val egress2 = Module(new CLOSegress2(dataWidth, dataRAMaddrWidth))
+  val peCol = Module(new PEcol(dataWidth, instrWidth = 288, dataRAMaddrWidth, TagWidth, CounterWidth))
+  val ingress1 = Module(new CLOSingress1(dataWidth, dataRAMaddrWidth, TagWidth, CounterWidth))
+  val ingress2 = Module(new CLOSingress2(dataWidth, dataRAMaddrWidth, TagWidth, CounterWidth))
+  val middle = Module(new CLOSmiddle(dataWidth, dataRAMaddrWidth, TagWidth, CounterWidth))
+  val egress1 = Module(new CLOSegress1(dataWidth, dataRAMaddrWidth, TagWidth, CounterWidth))
+  val egress2 = Module(new CLOSegress2(dataWidth, dataRAMaddrWidth, TagWidth, CounterWidth))
 
 //  when(run1){
 //    PC1 := io.PC1_in

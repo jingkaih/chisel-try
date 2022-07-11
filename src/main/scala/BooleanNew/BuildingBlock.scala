@@ -23,15 +23,15 @@ class CLOScell4(dataWidth: Int = 64) extends Module{
   io.out4 := cell4.fw_bottom
 }
 
-class CLOSingress1(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module{//1st column of 16 4*4 Crossbars// the last col is implemented in another way
+class CLOSingress1(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{//1st column of 16 4*4 Crossbars// the last col is implemented in another way
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(dataWidth.W)))
     val validin64 = Vec(64, Input(Bool()))
-    val tagin = Input(UInt(2.W))
+    val tagin = Input(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrin = Input(UInt(dataRAMaddrWidth.W))
     val out64 = Vec(64, Output(UInt(dataWidth.W)))
     val validout64 = Vec(64, Output(Bool()))
-    val tagout = Output(UInt(2.W))
+    val tagout = Output(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrout = Output(UInt(dataRAMaddrWidth.W))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
@@ -58,15 +58,15 @@ class CLOSingress1(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Modul
     ingress1(i).io.ctrl := io.ctrl(127-i*8,120-i*8)
 }
 
-class CLOSingress2(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module{//2nd column of 16 4*4 Crossbars// the last col is implemented in another way
+class CLOSingress2(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{//2nd column of 16 4*4 Crossbars// the last col is implemented in another way
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(dataWidth.W)))
     val validin64 = Vec(64, Input(Bool()))
-    val tagin = Input(UInt(2.W))
+    val tagin = Input(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrin = Input(UInt(dataRAMaddrWidth.W))
     val out64 = Vec(64, Output(UInt(dataWidth.W)))
     val validout64 = Vec(64, Output(Bool()))
-    val tagout = Output(UInt(2.W))
+    val tagout = Output(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrout = Output(UInt(dataRAMaddrWidth.W))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
@@ -94,15 +94,15 @@ class CLOSingress2(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Modul
     ingress2(i).io.ctrl := io.ctrl(127-i*8,120-i*8)
 }
 
-class CLOSmiddle(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module{//3rd column of 16 4*4 Crossbars// the last col is implemented in another way
+class CLOSmiddle(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{//3rd column of 16 4*4 Crossbars// the last col is implemented in another way
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(dataWidth.W)))
     val validin64 = Vec(64, Input(Bool()))
-    val tagin = Input(UInt(2.W))
+    val tagin = Input(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrin = Input(UInt(dataRAMaddrWidth.W))
     val out64 = Vec(64, Output(UInt(dataWidth.W)))
     val validout64 = Vec(64, Output(Bool()))
-    val tagout = Output(UInt(2.W))
+    val tagout = Output(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrout = Output(UInt(dataRAMaddrWidth.W))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
@@ -131,15 +131,15 @@ class CLOSmiddle(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module{
     middle(i).io.ctrl := io.ctrl(127-i*8,120-i*8)
 }
 
-class CLOSegress1(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module{//4th column of 16 4*4 Crossbars// the last col is implemented in another way
+class CLOSegress1(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{//4th column of 16 4*4 Crossbars// the last col is implemented in another way
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(dataWidth.W)))
     val validin64 = Vec(64, Input(Bool()))
-    val tagin = Input(UInt(2.W))
+    val tagin = Input(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrin = Input(UInt(dataRAMaddrWidth.W))
     val out64 = Vec(64, Output(UInt(dataWidth.W)))
     val validout64 = Vec(64, Output(Bool()))
-    val tagout = Output(UInt(2.W))
+    val tagout = Output(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrout = Output(UInt(dataRAMaddrWidth.W))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
@@ -176,15 +176,15 @@ class CLOSegress1(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module
     egress1(i).io.ctrl := io.ctrl(127-i*8,120-i*8)
 }
 
-class CLOSegress2(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module{// the last col of CLOS
+class CLOSegress2(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{// the last col of CLOS
   val io = IO(new Bundle{
     val in64 = Vec(64, Input(UInt(dataWidth.W)))
     val validin64 = Vec(64, Input(Bool()))
-    val tagin = Input(UInt(2.W))
+    val tagin = Input(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrin = Input(UInt(dataRAMaddrWidth.W))
     val out64 = Vec(64, Output(UInt(dataWidth.W)))
     val validout64 = Vec(64, Output(Bool()))
-    val tagout = Output(UInt(2.W))
+    val tagout = Output(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrout = Output(UInt(dataRAMaddrWidth.W))
     val ctrl = Input(UInt(128.W))// 16*8=128 bits
   })
@@ -211,13 +211,13 @@ class CLOSegress2(dataWidth: Int = 64, dataRAMaddrWidth: Int = 8) extends Module
     egress2(i).io.ctrl := io.ctrl(127-i*8,120-i*8)
 }
 
-class PEcol(dataWidth: Int = 64, instrWidth: Int = 288, dataRAMaddrWidth: Int = 8) extends Module{
+class PEcol(dataWidth: Int = 64, instrWidth: Int = 288, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{
   val io = IO(new Bundle{
     val d_in = Vec(32, Input(new PEDataBundle(dataWidth)))
     val d_out = Vec(32, Output(new PEDataBundle(dataWidth)))
-    val tagin = Input(UInt(2.W))
+    val tagin = Input(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrin = Input(UInt(dataRAMaddrWidth.W))
-    val tagout = Output(UInt(2.W))
+    val tagout = Output(new MEMTagDataBundle(TagWidth, CounterWidth))
     val addrout = Output(UInt(dataRAMaddrWidth.W))
     val instr = Input(UInt(instrWidth.W))
   })
