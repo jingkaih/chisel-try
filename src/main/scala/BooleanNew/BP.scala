@@ -99,14 +99,22 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val rd_D_inBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
   val rd_Tag_inBuf = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
 
+//  val actual_array_in_D
+  val rd_D_inBuf_RndCnt_decre = Reg(Vec(64, new MEMDataBundle(dataWidth)))
+  val rd_Tag_inBuf_RndCnt_decre = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
+
 
   rd_D_inBuf := inputDataBuffer(rd_Addr_inBuf)
   rd_Tag_inBuf := inputTagBuffer(rd_Addr_inBuf_1)
   val beginRun_reg = RegNext(io.beginRun)
-  when(beginRun_reg){
+  when(io.beginRun){
     rd_Addr_inBuf := rd_Addr_inBuf + 1.U
     rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
   }
+
+  rd_Tag_inBuf_RndCnt_decre.Tag := rd_Tag_inBuf.Tag
+  rd_Tag_inBuf_RndCnt_decre.RoundCnt := rd_Tag_inBuf.RoundCnt - 1.U
+
 //  when(io.beginRun){
 //    when(!rollBack_Addr_en){
 //      rd_Addr_inBuf := rd_Addr_inBuf + 1.U
@@ -268,10 +276,10 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val d_in = Wire(Vec(32, new PEDataBundle(dataWidth)))
   val d_out = Wire(Vec(32, new PEDataBundle(dataWidth)))
   for(i <- 0 until 32){
-    d_in(i).a := rd_D_inBuf(i*2).data
-    d_in(i).valid_a := rd_D_inBuf(i*2).validBit
-    d_in(i).b := rd_D_inBuf(i*2+1).data
-    d_in(i).valid_b := rd_D_inBuf(i*2+1).validBit
+    d_in(i).a := rd_D_inBuf_RndCnt_decre(i*2).data
+    d_in(i).valid_a := rd_D_inBuf_RndCnt_decre(i*2).validBit
+    d_in(i).b := rd_D_inBuf_RndCnt_decre(i*2+1).data
+    d_in(i).valid_b := rd_D_inBuf_RndCnt_decre(i*2+1).validBit
   }
   for(i <- 0 until 32){
     wr_D_outBuf(i*2).data := d_out(i).a
@@ -288,7 +296,7 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val PCBegin = RegInit(0.U(8.W))
   val AddrBegin = RegInit(0.U(8.W))
   array(0).io.d_in := d_in
-  array(0).io.Tag_in := rd_Tag_inBuf
+  array(0).io.Tag_in := rd_Tag_inBuf_RndCnt_decre
   array(0).io.PC1_in := PCBegin
   array(0).io.Addr_in := AddrBegin
 
