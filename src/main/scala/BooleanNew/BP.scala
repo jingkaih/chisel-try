@@ -103,6 +103,10 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val rd_D_inBuf_RndCnt_decre = Reg(Vec(64, new MEMDataBundle(dataWidth)))
   val rd_Tag_inBuf_RndCnt_decre = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
 
+  rd_D_inBuf_RndCnt_decre := rd_D_inBuf
+  rd_Tag_inBuf_RndCnt_decre.Tag := rd_Tag_inBuf.Tag
+  rd_Tag_inBuf_RndCnt_decre.RoundCnt := rd_Tag_inBuf.RoundCnt - 1.U
+
 
   rd_D_inBuf := inputDataBuffer(rd_Addr_inBuf)
   rd_Tag_inBuf := inputTagBuffer(rd_Addr_inBuf_1)
@@ -112,8 +116,7 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
     rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
   }
 
-  rd_Tag_inBuf_RndCnt_decre.Tag := rd_Tag_inBuf.Tag
-  rd_Tag_inBuf_RndCnt_decre.RoundCnt := rd_Tag_inBuf.RoundCnt - 1.U
+
 
 //  when(io.beginRun){
 //    when(!rollBack_Addr_en){
