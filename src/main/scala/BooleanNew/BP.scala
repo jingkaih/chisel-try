@@ -13,7 +13,7 @@ class MEMTagDataBundle(TagWidth: Int = 2, CounterWidth: Int = 3) extends Bundle{
   val RoundCnt = UInt(CounterWidth.W)
 }
 
-class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{
+class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{
   val io = IO(new Bundle{
     //instruction memory
     val wr_en_mem1 = Vec(PEcolCnt, Input(Bool()))
@@ -52,7 +52,7 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val wr_Addr_inBuf = RegInit(0.U(8.W))
   val wr_Addr_inBuf_1 = RegInit(0.U(8.W))
 
-
+  //inputBuffer write
   when(io.wr_Addr_inBuf_en){
     inputDataBuffer.write(wr_Addr_inBuf, io.wr_D_inBuf)// continuously write data into data MEM every cycle when wr_Addr_en is 1
     inputTagBuffer.write(wr_Addr_inBuf_1, io.wr_Tag_inBuf)
@@ -60,100 +60,89 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
     wr_Addr_inBuf_1 := wr_Addr_inBuf_1 + 1.U
   }
 
-
-
-  // depth issue handler
-//  val rollBack_D_en = RegInit(false.B)// could last for multiple cycles in case there are multiple cycle output needs to be write back
-//  val rollBack_D = Reg(Vec(32, new PEDataBundle(dataWidth)))
-//  val rollBack_PC_en = RegInit(false.B)// only last for 1 cycle, and it's the first cycle of rollBack_D_en
-//  val rollBack_PC = RegInit(0.U(8.W))// the first cycle of rollBack_D_en, you write this back; the last PC6 -> the first PC1
-//  val rollBack_Addr_en = RegInit(false.B)
-//  val rollBack_Addr = RegInit(0.U(8.W))// the last cycle of rollBack_D_en, you write this back
-//  //  val rollBack_Addr = RegInit(0.U(8.W)) // equivalent to wr_Addr_outBuf, will replace current rd_Addr_inBuf
-//  val hold = RegInit(true.B)
-//  val wr_Addr_outBuf_hold = RegInit(0.U(8.W))
-
-
-  //input buffer starts reading data
+  // *********************************************************************************
+  //declare input buffer incrementer
   val rd_Addr_inBuf = RegInit(0.U(8.W))
   val rd_Addr_inBuf_1 = RegInit(0.U(8.W))
   val rd_D_inBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
   val rd_Tag_inBuf = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
 
-//  val actual_array_in_D
+  //declare the actual input that is fed into the array
+  //when not rollback, this is connected to the inBuf
+  //when rollback, this is connected to the outbuf
+  //RoundCnt will be decremented by 1 every clk
   val rd_D_inBuf_RndCnt_decre = Reg(Vec(64, new MEMDataBundle(dataWidth)))
   val rd_Tag_inBuf_RndCnt_decre = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
+  // *********************************************************************************
+  //rd_Addr_inBuf is a incrementor. It keeps incrementing after beginRun
+  //If this is the case, then we don't have rollback mechanism in the inBuf
+  //A significantly large amount of trash PI have be stored (WASTEFUL!!)
+  // Therefore, we make the Tag 00 PI a stall signal
+  // When a Tag 00 is deteced in the inBuf side, the rd_Addr_inBuf stops incrementing until roll_back duration ends, such that we
+  // can use only TWO LINES of Tag 00 PI to mimic a whole Tag 00 graph. This single line has to be
+  // 1. Tag = 00
+  // 2. RoundCnt = 1
+  // 3. allValidBit = 0
 
-  // 1.1 bring this data to the front
-  when(!roll_back){
-    rd_D_inBuf_RndCnt_decre := rd_D_inBuf
-    rd_Tag_inBuf_RndCnt_decre.Tag := rd_Tag_inBuf.Tag
-    rd_Tag_inBuf_RndCnt_decre.RoundCnt := rd_Tag_inBuf.RoundCnt - 1.U
-  }.otherwise{
-    rd_D_inBuf_RndCnt_decre := rd_D_outBuf
-    rd_Tag_inBuf_RndCnt_decre.Tag := rd_Tag_outBuf.Tag
-    rd_Tag_inBuf_RndCnt_decre.RoundCnt := rd_Tag_outBuf.RoundCnt - 1.U
-  }
-
-
-
+  val rd_D_outBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
+  val rd_Tag_outBuf = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
+  val rd_Addr_outBuf = RegInit(0.U(8.W))
+  val rd_Addr_outBuf_1 = RegInit(0.U(8.W))
+  val rd_Addr_outBuf_pointer = RegInit(0.U(8.W))
+  val rd_Addr_outBuf_pointer_1 = RegInit(0.U(8.W))
 
   rd_D_inBuf := inputDataBuffer(rd_Addr_inBuf)
   rd_Tag_inBuf := inputTagBuffer(rd_Addr_inBuf_1)
   val beginRun_reg = RegNext(io.beginRun)
+  val inBuf_lock = RegInit(false.B)
   when(io.beginRun){
-    rd_Addr_inBuf := rd_Addr_inBuf + 1.U
-    rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
+    when(rd_Addr_outBuf_pointer === rd_Addr_outBuf - 1.U){// similar condition as roll_back's end but 1 clk eariler
+      rd_Addr_inBuf := rd_Addr_inBuf + 1.U
+      rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
+      inBuf_lock := false.B
+    }.elsewhen(rd_Tag_inBuf.Tag === 0.U || inBuf_lock === true.B){//We also have a Tag scanner at the inBuf side
+      rd_Addr_inBuf := rd_Addr_inBuf
+      rd_Addr_inBuf_1 := rd_Addr_inBuf_1
+      inBuf_lock := true.B
+    }
+
   }
 
-
-
-//  when(io.beginRun){
-//    when(!rollBack_Addr_en){
-//      rd_Addr_inBuf := rd_Addr_inBuf + 1.U
-//    } .otherwise{
-//      rd_Addr_inBuf := rollBack_Addr// I roll back my addr to the Addr_out
-//    }
-//  }
-//
-
-
-
+  // *********************************************************************************
+  // declare the context switch and rollback
+  // CS: asserted when the current Tag out is different from the last cycle's
+  // RB: asserted when not only CS, but also RoundCnt > 0 still
+  // RB_initial: the first cycle of RB
   val wr_D_outBuf = Wire(Vec(64, new MEMDataBundle(dataWidth)))// wire or reg? popcount is wire tho
   val wr_D_outBuf_reg = RegNext(wr_D_outBuf)//wr_D_outBuf has to be reg 1 cycle so that to synchronize with wr_Addr_outBuf incrementer (becuase popcount will take an extra cycle)
 
   val wr_Tag_outBuf = Wire(new MEMTagDataBundle(TagWidth, CounterWidth))
   val wr_Tag_outBuf_reg = RegNext(wr_Tag_outBuf)
 
-  val context_switch = Wire(Bool()) // last for only 1 clk, therefore cannot be used as roll back enable (which takes multiple cycles to read from outBuf)
-  val roll_back = RegInit(0.B) // last for multiple clk
-  val roll_back_initial = RegInit(0.B)// last for 1 clk
-  when(wr_Tag_outBuf.Tag =/= wr_Tag_outBuf_reg.Tag){ // wr_Tag_outBuf
-    context_switch := 1.B
+  val context_switch = Wire(Bool())// last for only 1 clk, therefore cannot be used as roll back enable (which takes multiple cycles to read from outBuf)
+  val roll_back = RegInit(false.B)// last for multiple clk
+  val roll_back_initial = RegInit(false.B) // last for 1 clk
+  when(wr_Tag_outBuf.Tag =/= wr_Tag_outBuf_reg.Tag){
+    context_switch := true.B
   }. otherwise{
-    context_switch := 0.B
-  }
-
-  //feed back data path part 1
-  when(rd_Addr_outBuf_pointer === rd_Addr_outBuf) {
-    roll_back := 0.B
-  } .elsewhen((context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U) || roll_back === 1.B){
-    //notice if there's only context_switch && wr_Tag_outBuf_reg.RoundCnt =/= 0.U, then when we context switch from tag00 graph (trash PIs) to valid graph, it will also trigger
-    roll_back := 1.B
-  }
-
-  when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U){
-    roll_back_initial := 1.B
+    context_switch := false.B
   }
 
 
-  val Addr_out = Wire(UInt(8.W))// the actual addr stream out from the last building block, not always useful
-  val Tag_out = Wire(new MEMTagDataBundle(TagWidth, CounterWidth))
-  val PC_out = Wire(UInt(8.W))
-//  wr_Addr_outBuf := Addr_out// self-increment
-  wr_Tag_outBuf := Tag_out
 
-
+  val wr_Addr_outBuf = RegInit(0.U(8.W)) // the 1st incrementor
+  val wr_Addr_outBuf_1 = RegInit(0.U(8.W)) // the 2nd incrementor, at same rate
+  val wr_Addr_outBuf_pointer = RegInit(0.U(8.W)) //points to the next location at which THE ultimate output will appear; Only if allValidBitsPopCnt =/=0.U and RoundCnt === 0, we update this because the current wr_D_outBuf is the final result
+  val wr_Addr_outBuf_pointer_1 = RegInit(0.U(8.W))
+  //This wr_Addr_outBuf_pointer is also used as part of the roll back mechanism
+  //The intermediate results are stored beyond this location but temporarily
+  //once roll back
+  // 1. start fetching data (intermediate result) from outBuf between location wr_Addr_outBuf_pointer (smaller) and wr_Addr_outBuf (greater)
+  // 1.1 bring this data to the front
+  // 2. and roll wr_Addr_outBuf back to wr_Addr_outBuf_pointer; in roll_back duration, set wr_Addr_outBuf in every clk (i.e., freeze it at wr_Addr_outBuf_pointer)
+  //when can we start incrementing it again? the time allValidBitsPopCnt =/= 0.U again
+  // 3. roll back PC as well. To PCout??
+  // 4. rollback rd_Addr_inBuf and rd_Addr_inBuf_1 to Addrout??
 
   val allValidBits = WireInit(0.U(64.W))
   allValidBits := Cat(
@@ -225,26 +214,44 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val allValidBitsPopCnt = RegInit(0.U(6.W))
   allValidBitsPopCnt := PopCount(allValidBits)
 
-  val rd_D_outBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
-  val rd_Tag_outBuf = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
-  val rd_Addr_outBuf = RegInit(0.U(8.W))
-  val rd_Addr_outBuf_1 = RegInit(0.U(8.W))
-  val rd_Addr_outBuf_pointer = RegInit(0.U(8.W))
-  val rd_Addr_outBuf_pointer_1 = RegInit(0.U(8.W))
+  //feed back data path part 1
+  when(rd_Addr_outBuf_pointer === rd_Addr_outBuf) {
+    roll_back := false.B //false.B
+  } .elsewhen((context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U) || roll_back === true.B){
+    //notice if there's only context_switch && wr_Tag_outBuf_reg.RoundCnt =/= 0.U,
+    //then when we context switch from tag00 graph (trash PIs) to a valid graph, it will also mistakenly trigger RB
+    roll_back := true.B //true.B
+  }
 
-  val wr_Addr_outBuf = RegInit(0.U(8.W)) // the 1st incrementor
-  val wr_Addr_outBuf_1 = RegInit(0.U(8.W)) // the 2nd incrementor, at same rate
-  val wr_Addr_outBuf_pointer = RegInit(0.U(8.W)) //points to the next location at which THE ultimate output will appear; Only if allValidBitsPopCnt =/=0.U and RoundCnt === 0, we update this because the current wr_D_outBuf is the final result
-  val wr_Addr_outBuf_pointer_1 = RegInit(0.U(8.W))
-  //This wr_Addr_outBuf_pointer is also used as part of the roll back mechanism
-  //The intermediate results are stored beyond this location but temporarily
-  //once roll back
-  // 1. start fetching data (intermediate result) from outBuf between location wr_Addr_outBuf_pointer (smaller) and wr_Addr_outBuf (greater)
+  when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U){
+    roll_back_initial := true.B //true.B
+  }
+
   // 1.1 bring this data to the front
-  // 2. and roll wr_Addr_outBuf back to wr_Addr_outBuf_pointer; in roll_back duration, set wr_Addr_outBuf in every clk (i.e., freeze it at wr_Addr_outBuf_pointer)
-  //when can we start incrementing it again? the time allValidBitsPopCnt =/= 0.U again
-  // 3. roll back PC as well. To PCout??
-  // 4. rollback rd_Addr_inBuf and rd_Addr_inBuf_1 to Addrout??
+  when(roll_back === false.B) {
+    //array_in is from the outBuf
+    rd_D_inBuf_RndCnt_decre := rd_D_inBuf
+    rd_Tag_inBuf_RndCnt_decre.Tag := rd_Tag_inBuf.Tag
+    rd_Tag_inBuf_RndCnt_decre.RoundCnt := rd_Tag_inBuf.RoundCnt - 1.U
+  }.otherwise{
+    //array_in is from the inBuf
+    rd_D_inBuf_RndCnt_decre := rd_D_outBuf
+    rd_Tag_inBuf_RndCnt_decre.Tag := rd_Tag_outBuf.Tag
+    rd_Tag_inBuf_RndCnt_decre.RoundCnt := rd_Tag_outBuf.RoundCnt - 1.U
+  }
+
+
+  val Addr_out = Wire(UInt(8.W))// the actual addr stream out from the last building block, not always useful
+  val Tag_out = Wire(new MEMTagDataBundle(TagWidth, CounterWidth))
+  val PC_out = Wire(UInt(8.W))
+//  wr_Addr_outBuf := Addr_out// self-increment
+  wr_Tag_outBuf := Tag_out
+
+
+
+
+
+
 
   when(roll_back){
     //2.
@@ -269,7 +276,8 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
 
   //1.
   // read Addr and read Addr pointer both take the snapshot of the current write Addr
-  when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U) { // this is same as the rollback enable condition, but it will initate operation in the bracket for only 1 clk
+  // this happens 1 cycle earlier: when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U) { // this is same as the rollback enable condition, but it will initate operation in the bracket for only 1 clk
+  when(roll_back_initial){// this is later than the above line
     //the below statements happen 1 clk before the statements in when(roll_back){}
     rd_Addr_outBuf := wr_Addr_outBuf// the end point
     rd_Addr_outBuf_1 := wr_Addr_outBuf_1
@@ -314,17 +322,17 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val PCBegin = RegInit(0.U(8.W))
   val AddrBegin = RegInit(0.U(8.W))
   when(beginRun_reg) {
-    when(!roll_back_initial){ // last for only 1 cycle
+    when(!roll_back_initial){ //when(!roll_back_initial){ // last for only 1 cycle
       PCBegin := PCBegin + 1.U
     } .otherwise {
       PCBegin := PC_out + 1.U
     }
   }
   when(beginRun_reg) {
-    when(!roll_back_initial){ // last for only 1 cycle
+    when(!roll_back_initial){ //when(!roll_back_initial){ // last for only 1 cycle
       AddrBegin := AddrBegin + 1.U
     } .otherwise {
-      AddrBegin := AddrBegin + 1.U
+      AddrBegin := Addr_out + 1.U
     }
   }
 
@@ -333,7 +341,7 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
 
   //below needs to be modified
   array(0).io.PC1_in := PCBegin
-  array(0).io.Addr_in := Addr_out + 1.U
+  array(0).io.Addr_in := AddrBegin
 
 
 
