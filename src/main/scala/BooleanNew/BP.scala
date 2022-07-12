@@ -15,9 +15,6 @@ class MEMTagDataBundle(TagWidth: Int = 2, CounterWidth: Int = 3) extends Bundle{
 
 class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module{
   val io = IO(new Bundle{
-    //    val d_in = Vec(32, Input(new PEDataBundle()))
-    //    val d_out = Vec(32, Output(new PEDataBundle()))
-
     //instruction memory
     val wr_en_mem1 = Vec(PEcolCnt, Input(Bool()))
     val wr_en_mem2 = Vec(PEcolCnt, Input(Bool()))
@@ -129,7 +126,8 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val wr_Tag_outBuf_reg = RegNext(wr_Tag_outBuf)
 
   val context_switch = Wire(Bool()) // last for only 1 clk, therefore cannot be used as roll back enable (which takes multiple cycles to read from outBuf)
-  val roll_back = RegInit(0.B)
+  val roll_back = RegInit(0.B) // last for multiple clk
+  val roll_back_initial = RegInit(0.B)// last for 1 clk
   when(wr_Tag_outBuf.Tag =/= wr_Tag_outBuf_reg.Tag){ // wr_Tag_outBuf
     context_switch := 1.B
   }. otherwise{
@@ -144,6 +142,9 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
     roll_back := 1.B
   }
 
+  when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U){
+    roll_back_initial := 1.B
+  }
 
 
   val Addr_out = Wire(UInt(8.W))// the actual addr stream out from the last building block, not always useful
@@ -226,10 +227,10 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
 
   val rd_D_outBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
   val rd_Tag_outBuf = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
-  val rd_Addr_outBuf := RegInit(0.U(8.W))
-  val rd_Addr_outBuf_1 := RegInit(0.U(8.W))
-  val rd_Addr_outBuf_pointer := RegInit(0.U(8.W))
-  val rd_Addr_outBuf_pointer_1 := RegInit(0.U(8.W))
+  val rd_Addr_outBuf = RegInit(0.U(8.W))
+  val rd_Addr_outBuf_1 = RegInit(0.U(8.W))
+  val rd_Addr_outBuf_pointer = RegInit(0.U(8.W))
+  val rd_Addr_outBuf_pointer_1 = RegInit(0.U(8.W))
 
   val wr_Addr_outBuf = RegInit(0.U(8.W)) // the 1st incrementor
   val wr_Addr_outBuf_1 = RegInit(0.U(8.W)) // the 2nd incrementor, at same rate
@@ -312,11 +313,19 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
 
   val PCBegin = RegInit(0.U(8.W))
   val AddrBegin = RegInit(0.U(8.W))
-  when(beginRun_reg) { // last for only 1 cycle
-    PCBegin := PCBegin + 1.U
+  when(beginRun_reg) {
+    when(!roll_back_initial){ // last for only 1 cycle
+      PCBegin := PCBegin + 1.U
+    } .otherwise {
+      PCBegin := PC_out + 1.U
+    }
   }
-  when(beginRun_reg) { // last for only 1 cycle
-    AddrBegin := AddrBegin + 1.U
+  when(beginRun_reg) {
+    when(!roll_back_initial){ // last for only 1 cycle
+      AddrBegin := AddrBegin + 1.U
+    } .otherwise {
+      AddrBegin := AddrBegin + 1.U
+    }
   }
 
   array(0).io.d_in := d_in
@@ -324,7 +333,7 @@ class BP(PEcolCnt: Int = 21, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
 
   //below needs to be modified
   array(0).io.PC1_in := PCBegin
-  array(0).io.Addr_in := AddrBegin
+  array(0).io.Addr_in := Addr_out + 1.U
 
 
 
