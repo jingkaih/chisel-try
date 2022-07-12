@@ -35,7 +35,7 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
     val wr_Addr_inBuf_en = Input(Bool())// write pointer increment enable
     //data memory interface (output)
 //    val rd_Addr_outBuf = Input(UInt(8.W))
-//    val rd_D_outBuf = Vec(64, Output(new MEMDataBundle(dataWidth)))
+    val rd_D_outBuf = Vec(64, Output(new MEMDataBundle(dataWidth)))
 //    val PC_out = Output(UInt(8.W))
   })
 
@@ -295,7 +295,7 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
 
 
 
-
+  io.rd_D_outBuf := rd_D_outBuf
 
 
 
