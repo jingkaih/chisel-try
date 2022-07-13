@@ -112,7 +112,15 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
       rd_Addr_inBuf := rd_Addr_inBuf + 1.U
       rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
       inBuf_lock := false.B
+    }.otherwise { // is this neccessary?
+      rd_Addr_inBuf := rd_Addr_inBuf
+      rd_Addr_inBuf_1 := rd_Addr_inBuf_1
+      inBuf_lock := inBuf_lock
     }
+  } .otherwise{ // is this neccessary?
+    rd_Addr_inBuf := rd_Addr_inBuf
+    rd_Addr_inBuf_1 := rd_Addr_inBuf_1
+    inBuf_lock := inBuf_lock
   }
 
   // *********************************************************************************
