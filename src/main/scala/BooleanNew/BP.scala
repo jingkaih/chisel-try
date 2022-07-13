@@ -96,7 +96,11 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val beginRun_reg = RegNext(io.beginRun)
   val inBuf_lock = RegInit(false.B)
   when(io.beginRun){
-    when(rd_Addr_outBuf_pointer === rd_Addr_outBuf - 1.U){// similar condition as roll_back's end but 1 clk eariler
+    //The order matters
+    // 1st priority: Unlock and resume the incrementing
+    // 2nd priority: Lock and stop the incrementing
+    // 3rd priority: when there's no lock, proceed as usual
+    when((rd_Addr_outBuf_pointer === rd_Addr_outBuf - 1.U) && inBuf_lock === true.B){// similar condition as roll_back's end but 1 clk eariler
       rd_Addr_inBuf := rd_Addr_inBuf + 1.U
       rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
       inBuf_lock := false.B
@@ -104,8 +108,11 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
       rd_Addr_inBuf := rd_Addr_inBuf
       rd_Addr_inBuf_1 := rd_Addr_inBuf_1
       inBuf_lock := true.B
+    }.elsewhen(inBuf_lock === false.B) {
+      rd_Addr_inBuf := rd_Addr_inBuf + 1.U
+      rd_Addr_inBuf_1 := rd_Addr_inBuf_1 + 1.U
+      inBuf_lock := false.B
     }
-
   }
 
   // *********************************************************************************
@@ -224,7 +231,9 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   }
 
   when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U){
-    roll_back_initial := true.B //true.B
+    roll_back_initial := true.B
+  }. otherwise{
+    roll_back_initial := false.B
   }
 
   // 1.1 bring this data to the front
