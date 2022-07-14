@@ -229,13 +229,23 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val allValidBitsPopCnt = RegInit(0.U(6.W))
   allValidBitsPopCnt := PopCount(allValidBits)
 
-  //feed back data path part 1
-  when(rd_Addr_outBuf_pointer === rd_Addr_outBuf) {
-    roll_back := false.B //false.B
-  } .elsewhen((context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U) || roll_back === true.B){
+//  //feed back data path part 1
+//  when(rd_Addr_outBuf_pointer === rd_Addr_outBuf) {
+//    roll_back := false.B //false.B
+//  } .elsewhen((context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U) || roll_back === true.B){
+//    //notice if there's only context_switch && wr_Tag_outBuf_reg.RoundCnt =/= 0.U,
+//    //then when we context switch from tag00 graph (trash PIs) to a valid graph, it will also mistakenly trigger RB
+//    roll_back := true.B //true.B
+//  }
+
+  when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U){
     //notice if there's only context_switch && wr_Tag_outBuf_reg.RoundCnt =/= 0.U,
     //then when we context switch from tag00 graph (trash PIs) to a valid graph, it will also mistakenly trigger RB
     roll_back := true.B //true.B
+  } .elsewhen(rd_Addr_outBuf_pointer === rd_Addr_outBuf) {
+    roll_back := false.B //false.B
+  } .elsewhen(roll_back === true.B) {
+    roll_back := true.B //false.B
   }
 
   when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U){
@@ -284,6 +294,7 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
     wr_Addr_outBuf_1 := wr_Addr_outBuf_1
   }
 
+  //we could possibly change it to when(allValidBitsPopCnt === 1.U && wr_Tag_outBuf_reg.RoundCnt === 0.U)? The Clos won't multicast the PO
   when(allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt === 0.U){//notice roundCnt of trash PIs is 0 but the allValidBitsPopCnt will also be 0, No harm
     //to understand it, pls compare its condition with wr_Addr_outBuf's incrementing condition
     wr_Addr_outBuf_pointer := wr_Addr_outBuf_pointer + 1.U// always point to the next location that is ready to store a final result
@@ -294,10 +305,10 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   //1.
   // read Addr and read Addr pointer both take the snapshot of the current write Addr
   // this happens 1 cycle earlier: when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U) { // this is same as the rollback enable condition, but it will initate operation in the bracket for only 1 clk
-  when(roll_back_initial){// this is later than the above line
-    //the below statements happen 1 clk before the statements in when(roll_back){}
-    rd_Addr_outBuf := wr_Addr_outBuf// the end point
-    rd_Addr_outBuf_1 := wr_Addr_outBuf_1
+  //when(roll_back_initial){// this is later than the above line; DON'T USE THIS! OTHERWISE YOU WILL NEVER ASSERT ROLL_BACK
+  when(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U){
+    rd_Addr_outBuf := wr_Addr_outBuf + 1.U// the end point
+    rd_Addr_outBuf_1 := wr_Addr_outBuf_1 + 1.U//THIS MANUALLY +1 IS IMPORTANT! Since we've replaced the when(roll_back_initial) with roll_back_initial's own trigger
     rd_Addr_outBuf_pointer := wr_Addr_outBuf_pointer// the start point; when roll back, rd_Addr_outBuf-pointer get self incremented and when it reaches rd_Addr_outBuf_pointer, roll_back becomes 0
     rd_Addr_outBuf_pointer_1 := wr_Addr_outBuf_pointer_1
   }
