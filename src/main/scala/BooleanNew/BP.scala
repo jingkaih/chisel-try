@@ -134,7 +134,7 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val wr_Tag_outBuf = Wire(new MEMTagDataBundle(TagWidth, CounterWidth))
   val wr_Tag_outBuf_reg = RegNext(wr_Tag_outBuf)
 
-  val context_switch = Wire(Bool())// last for only 1 clk, therefore cannot be used as roll back enable (which takes multiple cycles to read from outBuf)
+  val context_switch = WireDefault(false.B)// last for only 1 clk, therefore cannot be used as roll back enable (which takes multiple cycles to read from outBuf)
   val roll_back = RegInit(false.B)// last for multiple clk
   val roll_back_initial = RegInit(false.B) // last for 1 clk
   when(wr_Tag_outBuf.Tag =/= wr_Tag_outBuf_reg.Tag){
