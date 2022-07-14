@@ -64,8 +64,8 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   //declare input buffer incrementer
   val rd_Addr_inBuf = RegInit(0.U(8.W))
   val rd_Addr_inBuf_1 = RegInit(0.U(8.W))
-  val rd_D_inBuf = Reg(Vec(64, new MEMDataBundle(dataWidth)))
-  val rd_Tag_inBuf = Reg(new MEMTagDataBundle(TagWidth, CounterWidth))
+  val rd_D_inBuf = Wire(Vec(64, new MEMDataBundle(dataWidth)))
+  val rd_Tag_inBuf = Wire(new MEMTagDataBundle(TagWidth, CounterWidth))
 
   //declare the actual input that is fed into the array
   //when not rollback, this is connected to the inBuf
