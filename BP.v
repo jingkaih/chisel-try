@@ -11177,7 +11177,6 @@ module BP(
   reg [31:0] _RAND_956;
   reg [31:0] _RAND_957;
   reg [31:0] _RAND_958;
-  reg [31:0] _RAND_959;
 `endif // RANDOMIZE_REG_INIT
   reg  inputDataBuffer_0_validBit [0:255]; // @[BP.scala 44:36]
   wire  inputDataBuffer_0_validBit_MPORT_2_data; // @[BP.scala 44:36]
@@ -17414,7 +17413,6 @@ module BP(
   reg [1:0] wr_Tag_outBuf_reg_Tag; // @[BP.scala 135:34]
   reg [2:0] wr_Tag_outBuf_reg_RoundCnt; // @[BP.scala 135:34]
   reg  roll_back; // @[BP.scala 138:26]
-  reg  roll_back_initial; // @[BP.scala 139:34]
   wire [1:0] Tag_out_Tag = array_15_io_Tag_out_Tag; // @[BP.scala 272:21 BP.scala 413:11]
   wire  context_switch = Tag_out_Tag != wr_Tag_outBuf_reg_Tag; // @[BP.scala 140:26]
   reg [7:0] wr_Addr_outBuf; // @[BP.scala 148:31]
@@ -17678,7 +17676,7 @@ module BP(
   reg [7:0] PCBegin; // @[BP.scala 350:24]
   wire [7:0] _PCBegin_T_1 = PCBegin + 8'h1; // @[BP.scala 354:26]
   wire [7:0] PC_out = array_15_io_PC6_out; // @[BP.scala 273:20 BP.scala 415:10]
-  wire [7:0] _PCBegin_T_3 = PC_out + 8'h1; // @[BP.scala 356:25]
+  wire [7:0] _PCBegin_T_3 = PC_out - 8'h2; // @[BP.scala 356:25]
   BuildingBlockNew array_0 ( // @[BP.scala 47:54]
     .clock(array_0_clock),
     .reset(array_0_reset),
@@ -27441,11 +27439,6 @@ module BP(
     end else begin
       roll_back <= _GEN_156;
     end
-    if (reset) begin // @[BP.scala 139:34]
-      roll_back_initial <= 1'h0; // @[BP.scala 139:34]
-    end else begin
-      roll_back_initial <= _T_13;
-    end
     if (reset) begin // @[BP.scala 148:31]
       wr_Addr_outBuf <= 8'h0; // @[BP.scala 148:31]
     end else if (roll_back) begin // @[BP.scala 283:18]
@@ -27478,7 +27471,7 @@ module BP(
     if (reset) begin // @[BP.scala 350:24]
       PCBegin <= 8'h0; // @[BP.scala 350:24]
     end else if (io_beginRun) begin // @[BP.scala 352:21]
-      if (~roll_back_initial) begin // @[BP.scala 353:29]
+      if (~_T_13) begin // @[BP.scala 353:96]
         PCBegin <= _PCBegin_T_1; // @[BP.scala 354:15]
       end else begin
         PCBegin <= _PCBegin_T_3; // @[BP.scala 356:15]
@@ -29658,19 +29651,17 @@ initial begin
   _RAND_952 = {1{`RANDOM}};
   roll_back = _RAND_952[0:0];
   _RAND_953 = {1{`RANDOM}};
-  roll_back_initial = _RAND_953[0:0];
+  wr_Addr_outBuf = _RAND_953[7:0];
   _RAND_954 = {1{`RANDOM}};
-  wr_Addr_outBuf = _RAND_954[7:0];
+  wr_Addr_outBuf_1 = _RAND_954[7:0];
   _RAND_955 = {1{`RANDOM}};
-  wr_Addr_outBuf_1 = _RAND_955[7:0];
+  wr_Addr_outBuf_pointer = _RAND_955[7:0];
   _RAND_956 = {1{`RANDOM}};
-  wr_Addr_outBuf_pointer = _RAND_956[7:0];
+  wr_Addr_outBuf_pointer_1 = _RAND_956[7:0];
   _RAND_957 = {1{`RANDOM}};
-  wr_Addr_outBuf_pointer_1 = _RAND_957[7:0];
+  allValidBitsPopCnt = _RAND_957[5:0];
   _RAND_958 = {1{`RANDOM}};
-  allValidBitsPopCnt = _RAND_958[5:0];
-  _RAND_959 = {1{`RANDOM}};
-  PCBegin = _RAND_959[7:0];
+  PCBegin = _RAND_958[7:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial

@@ -350,10 +350,10 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
   val PCBegin = RegInit(0.U(8.W))
   val AddrBegin = RegInit(0.U(8.W))
   when(io.beginRun) {
-    when(!roll_back_initial){ //when(!roll_back_initial){ // last for only 1 cycle
+    when(!(context_switch && allValidBitsPopCnt =/= 0.U && wr_Tag_outBuf_reg.RoundCnt =/= 0.U)){ //when(!roll_back_initial){ // last for only 1 cycle
       PCBegin := PCBegin + 1.U
     } .otherwise {
-      PCBegin := PC_out + 1.U
+      PCBegin := PC_out - 2.U
     }
   }
   when(beginRun_reg) {
