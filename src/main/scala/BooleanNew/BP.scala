@@ -338,7 +338,7 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
 
   val PCBegin = RegInit(0.U(8.W))
   val AddrBegin = RegInit(0.U(8.W))
-  when(beginRun_reg) {
+  when(io.beginRun) {
     when(!roll_back_initial){ //when(!roll_back_initial){ // last for only 1 cycle
       PCBegin := PCBegin + 1.U
     } .otherwise {
