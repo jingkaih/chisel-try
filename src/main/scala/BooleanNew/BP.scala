@@ -418,8 +418,13 @@ class BP(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, Tag
 
 }
 
+//
+//object BPMain extends App {
+//  println("Hello World, I will now generate the Verilog file!")
+//  (new chisel3.stage.ChiselStage).emitVerilog(new BP())
+//}
 
 object BPMain extends App {
   println("Hello World, I will now generate the Verilog file!")
-  (new chisel3.stage.ChiselStage).emitVerilog(new BP())
+  (new chisel3.stage.ChiselStage).emitVerilog(new BP(16, 64, 8, 2, 3), Array("--repl-seq-mem", "-c:BP:-o:BP.mem.conf"))
 }
