@@ -2,8 +2,17 @@ package BPwithNoInputDataBuffer
 import chisel3._
 import chisel3.util._
 
+class MEMDataBundle(dataWidth: Int = 64) extends Bundle{
+  val validBit = Bool()
+  val data = UInt(dataWidth.W)
+}
 
-class Array(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module {
+class MEMTagDataBundle(TagWidth: Int = 2, CounterWidth: Int = 3) extends Bundle{
+  val Tag = UInt(TagWidth.W)
+  val RoundCnt = UInt(CounterWidth.W)
+}
+
+class PEArray(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, TagWidth: Int = 2, CounterWidth: Int = 3) extends Module {
   val io = IO(new Bundle {
     //instruction memory
     val wr_en_mem1 = Vec(PEcolCnt, Input(Bool()))
@@ -20,8 +29,8 @@ class Array(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, 
     val wr_instr_mem6 = Vec(PEcolCnt, Input(UInt(128.W)))
     val d_in = Vec(32, Input(new PEDataBundle(dataWidth)))
     val d_out = Vec(32, Output(new PEDataBundle(dataWidth)))
-    val Tag_in = Input(UInt(TagWidth.W))
-    val Tag_out = Output(UInt(TagWidth.W))
+    val Tag_in = Input(new MEMTagDataBundle(TagWidth, CounterWidth))
+    val Tag_out = Output(new MEMTagDataBundle(TagWidth, CounterWidth))
     val Addr_in = Input(UInt(dataRAMaddrWidth.W))
     val Addr_out = Output(UInt(dataRAMaddrWidth.W))
     val PC_in = Input(UInt(dataRAMaddrWidth.W))
@@ -85,7 +94,7 @@ class Array(PEcolCnt: Int = 16, dataWidth: Int = 64, dataRAMaddrWidth: Int = 8, 
 }
 
 
-object ArrayMain extends App {
+object PEArrayMain extends App {
   println("Hello World, I will now generate the Verilog file!")
-  (new chisel3.stage.ChiselStage).emitVerilog(new Array(16, 64, 8, 2, 3), Array("--repl-seq-mem", "-c:Array:-o:Array.mem.conf"))
+  (new chisel3.stage.ChiselStage).emitVerilog(new PEArray(16, 64, 8, 2, 3), Array("--repl-seq-mem", "-c:PEArray:-o:PEArray.mem.conf"))
 }
