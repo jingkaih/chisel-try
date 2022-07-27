@@ -5648,6 +5648,12 @@ module BuildingBlockNew(
   reg [31:0] _RAND_9;
   reg [31:0] _RAND_10;
   reg [31:0] _RAND_11;
+  reg [287:0] _RAND_12;
+  reg [127:0] _RAND_13;
+  reg [127:0] _RAND_14;
+  reg [127:0] _RAND_15;
+  reg [127:0] _RAND_16;
+  reg [127:0] _RAND_17;
 `endif // RANDOMIZE_REG_INIT
   wire [7:0] Mem1_R0_addr; // @[BuildingBlockNew.scala 34:25]
   wire  Mem1_R0_clk; // @[BuildingBlockNew.scala 34:25]
@@ -7192,6 +7198,12 @@ module BuildingBlockNew(
   reg [7:0] wrAddr4; // @[BuildingBlockNew.scala 49:24]
   reg [7:0] wrAddr5; // @[BuildingBlockNew.scala 50:24]
   reg [7:0] wrAddr6; // @[BuildingBlockNew.scala 51:24]
+  reg [287:0] instr1; // @[BuildingBlockNew.scala 53:21]
+  reg [127:0] instr2; // @[BuildingBlockNew.scala 54:21]
+  reg [127:0] instr3; // @[BuildingBlockNew.scala 55:21]
+  reg [127:0] instr4; // @[BuildingBlockNew.scala 56:21]
+  reg [127:0] instr5; // @[BuildingBlockNew.scala 57:21]
+  reg [127:0] instr6; // @[BuildingBlockNew.scala 58:21]
   wire [7:0] _wrAddr1_T_1 = wrAddr1 + 8'h1; // @[BuildingBlockNew.scala 226:24]
   wire [7:0] _wrAddr2_T_1 = wrAddr2 + 8'h1; // @[BuildingBlockNew.scala 235:24]
   wire [7:0] _wrAddr3_T_1 = wrAddr3 + 8'h1; // @[BuildingBlockNew.scala 244:24]
@@ -9022,7 +9034,7 @@ module BuildingBlockNew(
   assign peCol_io_tagin_Tag = io_Tag_in_Tag; // @[BuildingBlockNew.scala 281:18]
   assign peCol_io_tagin_RoundCnt = io_Tag_in_RoundCnt; // @[BuildingBlockNew.scala 281:18]
   assign peCol_io_addrin = io_Addr_in; // @[BuildingBlockNew.scala 282:19]
-  assign peCol_io_instr = Mem1_R0_data; // @[BuildingBlockNew.scala 223:22 BuildingBlockNew.scala 229:12]
+  assign peCol_io_instr = instr1; // @[BuildingBlockNew.scala 163:18]
   assign ingress1_clock = clock;
   assign ingress1_io_in64_0 = peCol_io_d_out_0_a; // @[BuildingBlockNew.scala 287:27]
   assign ingress1_io_in64_1 = peCol_io_d_out_0_b; // @[BuildingBlockNew.scala 288:29]
@@ -9123,7 +9135,7 @@ module BuildingBlockNew(
   assign ingress1_io_tagin_Tag = peCol_io_tagout_Tag; // @[BuildingBlockNew.scala 284:21]
   assign ingress1_io_tagin_RoundCnt = peCol_io_tagout_RoundCnt; // @[BuildingBlockNew.scala 284:21]
   assign ingress1_io_addrin = peCol_io_addrout; // @[BuildingBlockNew.scala 285:22]
-  assign ingress1_io_ctrl = Mem2_R0_data; // @[BuildingBlockNew.scala 232:22 BuildingBlockNew.scala 238:12]
+  assign ingress1_io_ctrl = instr2; // @[BuildingBlockNew.scala 164:20]
   assign ingress2_clock = clock;
   assign ingress2_io_in64_0 = ingress1_io_out64_0; // @[BuildingBlockNew.scala 293:20]
   assign ingress2_io_in64_1 = ingress1_io_out64_1; // @[BuildingBlockNew.scala 293:20]
@@ -9256,7 +9268,7 @@ module BuildingBlockNew(
   assign ingress2_io_tagin_Tag = ingress1_io_tagout_Tag; // @[BuildingBlockNew.scala 295:21]
   assign ingress2_io_tagin_RoundCnt = ingress1_io_tagout_RoundCnt; // @[BuildingBlockNew.scala 295:21]
   assign ingress2_io_addrin = ingress1_io_addrout; // @[BuildingBlockNew.scala 296:22]
-  assign ingress2_io_ctrl = Mem3_R0_data; // @[BuildingBlockNew.scala 241:22 BuildingBlockNew.scala 247:12]
+  assign ingress2_io_ctrl = instr3; // @[BuildingBlockNew.scala 165:20]
   assign middle_clock = clock;
   assign middle_io_in64_0 = ingress2_io_out64_0; // @[BuildingBlockNew.scala 297:18]
   assign middle_io_in64_1 = ingress2_io_out64_1; // @[BuildingBlockNew.scala 297:18]
@@ -9389,7 +9401,7 @@ module BuildingBlockNew(
   assign middle_io_tagin_Tag = ingress2_io_tagout_Tag; // @[BuildingBlockNew.scala 299:19]
   assign middle_io_tagin_RoundCnt = ingress2_io_tagout_RoundCnt; // @[BuildingBlockNew.scala 299:19]
   assign middle_io_addrin = ingress2_io_addrout; // @[BuildingBlockNew.scala 300:20]
-  assign middle_io_ctrl = Mem4_R0_data; // @[BuildingBlockNew.scala 250:22 BuildingBlockNew.scala 256:12]
+  assign middle_io_ctrl = instr4; // @[BuildingBlockNew.scala 166:18]
   assign egress1_clock = clock;
   assign egress1_io_in64_0 = middle_io_out64_0; // @[BuildingBlockNew.scala 301:19]
   assign egress1_io_in64_1 = middle_io_out64_1; // @[BuildingBlockNew.scala 301:19]
@@ -9522,7 +9534,7 @@ module BuildingBlockNew(
   assign egress1_io_tagin_Tag = middle_io_tagout_Tag; // @[BuildingBlockNew.scala 303:20]
   assign egress1_io_tagin_RoundCnt = middle_io_tagout_RoundCnt; // @[BuildingBlockNew.scala 303:20]
   assign egress1_io_addrin = middle_io_addrout; // @[BuildingBlockNew.scala 304:21]
-  assign egress1_io_ctrl = Mem5_R0_data; // @[BuildingBlockNew.scala 259:22 BuildingBlockNew.scala 265:12]
+  assign egress1_io_ctrl = instr5; // @[BuildingBlockNew.scala 167:19]
   assign egress2_clock = clock;
   assign egress2_io_in64_0 = egress1_io_out64_0; // @[BuildingBlockNew.scala 305:19]
   assign egress2_io_in64_1 = egress1_io_out64_1; // @[BuildingBlockNew.scala 305:19]
@@ -9655,7 +9667,7 @@ module BuildingBlockNew(
   assign egress2_io_tagin_Tag = egress1_io_tagout_Tag; // @[BuildingBlockNew.scala 307:20]
   assign egress2_io_tagin_RoundCnt = egress1_io_tagout_RoundCnt; // @[BuildingBlockNew.scala 307:20]
   assign egress2_io_addrin = egress1_io_addrout; // @[BuildingBlockNew.scala 308:21]
-  assign egress2_io_ctrl = Mem6_R0_data; // @[BuildingBlockNew.scala 268:22 BuildingBlockNew.scala 274:12]
+  assign egress2_io_ctrl = instr6; // @[BuildingBlockNew.scala 168:19]
   always @(posedge clock) begin
     if (reset) begin // @[BuildingBlockNew.scala 40:20]
       PC1 <= 8'h0; // @[BuildingBlockNew.scala 40:20]
@@ -9717,6 +9729,12 @@ module BuildingBlockNew(
     end else if (io_wr_en_mem6) begin // @[BuildingBlockNew.scala 268:22]
       wrAddr6 <= _wrAddr6_T_1; // @[BuildingBlockNew.scala 271:13]
     end
+    instr1 <= Mem1_R0_data; // @[BuildingBlockNew.scala 223:22 BuildingBlockNew.scala 229:12]
+    instr2 <= Mem2_R0_data; // @[BuildingBlockNew.scala 232:22 BuildingBlockNew.scala 238:12]
+    instr3 <= Mem3_R0_data; // @[BuildingBlockNew.scala 241:22 BuildingBlockNew.scala 247:12]
+    instr4 <= Mem4_R0_data; // @[BuildingBlockNew.scala 250:22 BuildingBlockNew.scala 256:12]
+    instr5 <= Mem5_R0_data; // @[BuildingBlockNew.scala 259:22 BuildingBlockNew.scala 265:12]
+    instr6 <= Mem6_R0_data; // @[BuildingBlockNew.scala 268:22 BuildingBlockNew.scala 274:12]
   end
 // Register and memory initialization
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
@@ -9778,6 +9796,18 @@ initial begin
   wrAddr5 = _RAND_10[7:0];
   _RAND_11 = {1{`RANDOM}};
   wrAddr6 = _RAND_11[7:0];
+  _RAND_12 = {9{`RANDOM}};
+  instr1 = _RAND_12[287:0];
+  _RAND_13 = {4{`RANDOM}};
+  instr2 = _RAND_13[127:0];
+  _RAND_14 = {4{`RANDOM}};
+  instr3 = _RAND_14[127:0];
+  _RAND_15 = {4{`RANDOM}};
+  instr4 = _RAND_15[127:0];
+  _RAND_16 = {4{`RANDOM}};
+  instr5 = _RAND_16[127:0];
+  _RAND_17 = {4{`RANDOM}};
+  instr6 = _RAND_17[127:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
